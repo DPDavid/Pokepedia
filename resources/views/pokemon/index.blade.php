@@ -7,7 +7,8 @@
     <!-- Barra de búsqueda -->
     <form action="{{ route('pokemon.search') }}" method="GET" class="mb-4">
         <div class="input-group">
-            <img src="{{ asset('images/Poké_Ball_icon.svg.png') }}" width="30" height="30" alt="">
+            <!-- Logo de pokemon ajustado-->
+            <img src="{{ asset('images/Poké_Ball_icon.svg.png') }}" width="30" height="30" alt="" style="margin-top: 3px;">
             <input type="text" name="search" class="form-control" placeholder="Buscar Pokémon..." value="{{ $searchTerm ?? '' }}">
             <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
@@ -20,6 +21,7 @@
             <button class="btn btn-secondary dropdown-toggle" type="button" id="rarityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ $currentRarity ?? 'Todas las rarezas' }}
             </button>
+            <!--Todas las rarezas de cartas de pokemon-->
             <ul class="dropdown-menu" aria-labelledby="rarityDropdown" style="max-height: 400px; overflow-y: auto;">
                 <li><a class="dropdown-item" href="{{ route('pokemon.index') }}">Todas</a></li>
                 @foreach([
