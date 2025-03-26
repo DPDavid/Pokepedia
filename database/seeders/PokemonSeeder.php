@@ -39,7 +39,7 @@ class PokemonSeeder extends Seeder
                 foreach ($pokemonData as $pokemon) {
                     $this->processPokemon($pokemon, $totalProcessed, $totalSkipped);
                 }
-            } 
+            }
             //Pokemon individual
             else {
                 $this->processPokemon($pokemonData, $totalProcessed, $totalSkipped);
