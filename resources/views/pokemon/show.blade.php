@@ -13,7 +13,7 @@
             <h1>{{ $pokemon->name }}</h1>
             
             <div class="card mb-3">
-                <div class="card-body">
+                <div class="card-body" class="border border-secondaryordw">
                     <p><strong>HP:</strong> {{ $pokemon->hp }}</p>
                     <p><strong>Nivel:</strong> {{ $pokemon->level ?? 'N/A' }}</p>
                     <p><strong>Evoluciona de:</strong> {{ $pokemon->evolves_from ?? 'N/A' }}</p>
