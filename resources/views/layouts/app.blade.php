@@ -19,6 +19,7 @@
 </head>
 
 <body style="background-color:whitesmoke;">
+
     <div class="container">
         @yield('content')
     </div>

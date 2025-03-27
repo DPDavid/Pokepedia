@@ -2,17 +2,25 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Cartas Pokémon</h1>
+    <div class="text-center mt-4">
+        <h1 class="fw-bold">
+            <a href="{{ route('pokemon.index', ['page' => 1]) }}" class="text-dark text-decoration-none">
+                Cartas Pokémon
+            </a>
+        </h1>
+    </div>
 
     <!-- Barra de búsqueda -->
-    <form action="{{ route('pokemon.search') }}" method="GET" class="mb-4">
+    <form action="{{ route('pokemon.index') }}" method="GET" class="mb-4">
         <div class="input-group">
-            <!-- Logo de pokemon ajustado-->
             <img src="{{ asset('images/Poké_Ball_icon.svg.png') }}" width="30" height="30" alt="" style="margin-top: 3px;">
             <input type="text" name="search" class="form-control" placeholder="Buscar Pokémon..." value="{{ $searchTerm ?? '' }}">
+            <input type="hidden" name="page" value="1"> <!-- Reinicia a la página 1 -->
             <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
     </form>
+
+
 
     <!-- Filtros por rareza-->
     <div class="mb-4">
@@ -32,9 +40,14 @@
                 'Illustration Rare', 'Shiny Rare', 'Special Illustration Rare',
                 'Hyper Rare', 'Trainer Gallery Rare Holo'
                 ] as $rarity)
-                <li><a class="dropdown-item" href="{{ route('pokemon.rarity', $rarity) }}">{{ $rarity }}</a></li>
+                <li>
+                    <a class="dropdown-item" href="{{ route('pokemon.index', ['rarity' => $rarity, 'search' => request('search')]) }}">
+                        {{ $rarity }}
+                    </a>
+                </li>
                 @endforeach
             </ul>
+
         </div>
     </div>
 
@@ -61,9 +74,33 @@
         @endforeach
     </div>
 
-    <!-- Paginación -->
-    <div class="d-flex justify-content-center">
-        {{ $pokemons->links() }}
+    <!--Paginacion-->
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <nav>
+            <ul class="pagination">
+                <!-- Botón Anterior -->
+                @if ($pokemons->onFirstPage())
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+                @else
+                <li class="page-item">
+                    <a class="page-link" href="{{ $pokemons->appends(request()->query())->previousPageUrl() }}">&laquo; Anterior</a>
+                </li>
+                @endif
+
+                <!-- Botón Siguiente -->
+                @if ($pokemons->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $pokemons->appends(request()->query())->nextPageUrl() }}">Siguiente &raquo;</a>
+                </li>
+                @else
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+                @endif
+            </ul>
+        </nav>
     </div>
 </div>
 @endsection
