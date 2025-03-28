@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
+    //Funcion para registrarse
     public function register(Request $request) {
        $user = new User();
        $user-> name  = $request->name;
@@ -22,12 +22,14 @@ class LoginController extends Controller
        Auth::login($user);
        return redirect(route('privada'));
     }
+    //Funcion para logearse usando solamente el email y la contraseña
     public function login(Request $request) {
         $credentials = [
             'email'=> $request->email,
             'password'=> $request->password,
         ];
     
+        //Usa el checkbox de remember para recordar el inicio de sesión o no en la página
         $remember = ($request->has('remember') ? true : false);
         if(Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
@@ -37,6 +39,8 @@ class LoginController extends Controller
             return redirect('login');
         }
     }
+
+    //Funcion para cerrar sesion
     public function logout(Request $request) {
         Auth::logout();
 
