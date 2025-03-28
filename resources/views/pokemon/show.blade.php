@@ -12,6 +12,22 @@
         <div class="col-md-6">
             <h1>{{ $pokemon->name }}</h1>
             
+            <!--Boton de favoritos-->
+            @auth
+            <form action="{{ route('favorites.toggle', $pokemon->pokemon_id) }}" method="POST" class="mb-3">
+                @csrf
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-heart{{ Auth::user()->favoritePokemons->contains($pokemon->pokemon_id) ? '-fill' : '' }}"></i>
+                    {{ Auth::user()->favoritePokemons->contains($pokemon->pokemon_id) ? 'Quitar de favoritos' : 'Añadir a favoritos' }}
+                </button>
+            </form>
+            <!--Enlace si no hay ninguna carta añadida a favoritos-->
+            @else
+            <a href="{{ route('login') }}" class="btn btn-danger mb-3">
+                <i class="bi bi-heart"></i> Inicia sesión para guardar favoritos
+            </a>
+            @endauth
+            
             <div class="card mb-3">
                 <div class="card-body" class="border border-secondaryordw">
                     <p><strong>HP:</strong> {{ $pokemon->hp }}</p>

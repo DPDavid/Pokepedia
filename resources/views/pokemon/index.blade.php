@@ -2,6 +2,28 @@
 
 @section('content')
 <div class="container">
+    <!--Iniciar Sesion-->
+    <div class="text-end mb-4">
+        @auth
+            <div class="d-flex align-items-center justify-content-end">
+                <a href="{{ route('privada') }}" class="btn btn-success me-2">
+                    <i class="bi bi-person-circle me-1"></i>
+                    {{ Auth::user()->name }}
+                </a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-box-arrow-right"></i> Salir
+                    </button>
+                </form>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="btn btn-primary">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+            </a>
+        @endauth
+    </div>
+    <!--Titulo de la página-->
     <div class="text-center mt-4">
         <h1 class="fw-bold">
             <a href="{{ route('pokemon.index', ['page' => 1]) }}" class="text-dark text-decoration-none">
