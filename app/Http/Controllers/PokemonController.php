@@ -3,67 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pokemon;
+use App\Models\Trainer;
+use App\Models\Energy;
 use Illuminate\Http\Request;
 
 class PokemonController extends Controller
 {
-    //Funcion para listar las cartas pokemon por varios metodos
     public function index(Request $request)
     {
-        $query = Pokemon::query();
+        $query = $request->input('search');
+        $rarity = $request->input('rarity');
 
-        //Busqueda de pokemon por el nombre introducido en el buscador
-        if ($searchTerm = $request->input('search')) {
-            $query->where('name', 'LIKE', "%{$searchTerm}%");
+        // Get all cards in one collection
+        $cards = collect();
+
+        // Get Pokémon cards
+        $pokemons = Pokemon::query();
+        if ($query) {
+            $pokemons->where('name', 'LIKE', "%{$query}%");
         }
-
-        //Filtro de todas las rarezas que hay de tipos de cartas
-        if ($currentRarity = $request->input('rarity')) {
-            $query->where('rarity', $currentRarity);
+        if ($rarity) {
+            $pokemons->where('rarity', $rarity);
         }
+        $pokemons = $pokemons->orderBy('name', 'asc')->get();
+        $pokemons->each(function ($item) use (&$cards) {
+            $item->card_type = 'pokemon';
+            $cards->push($item);
+        });
 
-        //Ordena las cartas por su nombre de manera asccendente(se cambiara para poder hacerlo tambien de manera descendente)
-        $pokemons = $query->orderBy('name', 'asc')
-            //muestra las cartas de 20 en 20
-            ->paginate(20)
-            ->appends($request->except('page'));
-        
-        //retorna en la vista los filtros ya sean el nombre en el buscador, el filtro de rarezas y el orden de los pokemons
-        return view('pokemon.index', compact('pokemons', 'searchTerm', 'currentRarity'));
+        // Get Trainer cards
+        $trainers = Trainer::query();
+        if ($query) {
+            $trainers->where('name', 'LIKE', "%{$query}%");
+        }
+        if ($rarity) {
+            $trainers->where('rarity', $rarity);
+        }
+        $trainers = $trainers->orderBy('name', 'asc')->get();
+        $trainers->each(function ($item) use (&$cards) {
+            $item->card_type = 'trainer';
+            $cards->push($item);
+        });
+
+        // Get Energy cards
+        $energies = Energy::query();
+        if ($query) {
+            $energies->where('name', 'LIKE', "%{$query}%");
+        }
+        $energies = $energies->orderBy('name', 'asc')->get();
+        $energies->each(function ($item) use (&$cards) {
+            $item->card_type = 'energy';
+            $cards->push($item);
+        });
+
+        //Paginado de la coleccion de cartas
+        $page = $request->input('page', 1);
+        $perPage = 12;
+        $paginatedCards = new \Illuminate\Pagination\LengthAwarePaginator(
+            $cards->forPage($page, $perPage),
+            $cards->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('pokemon.index', [
+            'cards' => $paginatedCards,
+            'searchTerm' => $query,
+            'currentRarity' => $rarity
+        ]);
     }
 
-    //Funcion para mostrar individualmente los pokemons
     public function show($id)
     {
-        //Muestra al pokemon por su id
-        $pokemon = Pokemon::where('pokemon_id', $id)->firstOrFail();
-        //Retorna en la vista show el pokemon dado su id
-        return view('pokemon.show', compact('pokemon'));
-    }
+        // Primero intenta encontrar como Pokémon
+        $card = Pokemon::where('pokemon_id', $id)->first();
+        $type = 'pokemon';
 
-    //Funcion para buscar los pokemons con un buscador
-    public function search(Request $request)
-    {
-        //Obtencion del nombre del pokemon por el buscador
-        $searchTerm = $request->input('search');
+        if (!$card) {
+            $card = Trainer::where('trainer_id', $id)->first();
+            $type = 'trainer';
+        }
 
-        //Filtra el nombre del pokemon
-        $pokemons = Pokemon::where('name', 'LIKE', "%{$searchTerm}%")
-            ->paginate(20)
-            ->appends(['search' => $searchTerm]);
+        if (!$card) {
+            $card = Energy::where('energy_id', $id)->firstOrFail();
+            $type = 'energy';
+        }
 
-        //Muestra en la vista el pokemons buscado
-        return view('pokemon.index', compact('pokemons', 'searchTerm'));
-    }
-
-    //Funcion para filtrar a los pokemons por su rareza
-    public function filterByRarity($rarity)
-    {
-        //Adquiere las cartas pokemon que tienen esa rareza
-        $pokemons = Pokemon::where('rarity', $rarity)
-            ->paginate(20);
-
-        //Retorna en la vista las cartas con la rareza seleccionada
-        return view('pokemon.index', compact('pokemons', 'rarity'));
+        return view('pokemon.show', compact('card', 'type'));
     }
 }

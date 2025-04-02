@@ -22,6 +22,10 @@ Route::prefix('')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('/favorites/toggle/{pokemon}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
+    Route::post('/favorites/toggle/{type}/{id}', [FavoriteController::class, 'toggleFavorite'])
+        ->name('favorites.toggle')
+        ->where('type', 'pokemon|trainer|energy');
+    
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::get('/privada', [FavoriteController::class, 'privatePage'])->name('privada');
 });

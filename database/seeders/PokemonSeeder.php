@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -11,73 +10,40 @@ class PokemonSeeder extends Seeder
     public function run()
     {
         $basePath = database_path('pokedatabase');
-
-        //Obtener todos los archivos JSON
         $jsonFiles = File::allFiles($basePath);
 
-        $totalProcessed = 0;
-        $totalSkipped = 0;
-
         foreach ($jsonFiles as $file) {
-            //Condicion para los archivos JSON
-            if ($file->getExtension() !== 'json') {
-                $totalSkipped++;
-                continue;
-            }
+            if ($file->getExtension() !== 'json') continue;
 
-            $pokemonData = json_decode(file_get_contents($file), true);
+            $data = json_decode(file_get_contents($file), true);
+            if (json_last_error() !== JSON_ERROR_NONE) continue;
 
-            //Validacion del archivo
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->command->warn("⏩ Archivo inválido: {$file->getFilename()}");
-                $totalSkipped++;
-                continue;
-            }
-
-            //Array de pokemon
-            if (isset($pokemonData[0]) && is_array($pokemonData[0])) {
-                foreach ($pokemonData as $pokemon) {
-                    $this->processPokemon($pokemon, $totalProcessed, $totalSkipped);
-                }
-            }
-            //Pokemon individual
-            else {
-                $this->processPokemon($pokemonData, $totalProcessed, $totalSkipped);
+            if (isset($data[0])) {
+                foreach ($data as $item) $this->processPokemon($item);
+            } else {
+                $this->processPokemon($data);
             }
         }
-
-        $this->command->info("✅ Proceso completado");
-        $this->command->info("Pokémon procesados: {$totalProcessed}");
-        $this->command->warn("Pokémon omitidos: {$totalSkipped}");
     }
 
-    protected function processPokemon($pokemon, &$processed, &$skipped)
+    protected function processPokemon($item)
     {
-        //Validacion que sea un pokemon
-        if (!isset($pokemon['supertype']) || $pokemon['supertype'] !== 'Pokémon') {
-            $skipped++;
-            return;
-        }
+        if (($item['supertype'] ?? '') !== 'Pokémon') return;
 
-        try {
-            //Creacion del pokemon
-            Pokemon::updateOrCreate(
-                ['pokemon_id' => $pokemon['id']],
-                [
-                    'name' => $pokemon['name'],
-                    'supertype' => $pokemon['supertype'],
-                    'level' => $pokemon['level'] ?? null,
-                    'hp' => isset($pokemon['hp']) ? intval($pokemon['hp']) : 0,
-                    'evolves_from' => $pokemon['evolvesFrom'] ?? null,
-                    'flavor_text' => $pokemon['flavorText'] ?? null,
-                    'rarity' => $pokemon['rarity'] ?? null,
-                    'national_pokedex_number' => $pokemon['nationalPokedexNumbers'][0] ?? null,
-                    'image_small' => $pokemon['images']['small'] ?? null,
-                    'image_large' => $pokemon['images']['large'] ?? null,
-                ]
-            );
-            $processed++;
-        } catch (\Exception $e) {
-        }
+        Pokemon::updateOrCreate(
+            ['pokemon_id' => $item['id']],
+            [
+                'name' => $item['name'],
+                'supertype' => $item['supertype'],
+                'level' => $item['level'] ?? null,
+                'hp' => isset($item['hp']) ? intval($item['hp']) : 0,
+                'evolves_from' => $item['evolvesFrom'] ?? null,
+                'flavor_text' => $item['flavorText'] ?? null,
+                'rarity' => $item['rarity'] ?? null,
+                'national_pokedex_number' => $item['nationalPokedexNumbers'][0] ?? null,
+                'image_small' => $item['images']['small'] ?? null,
+                'image_large' => $item['images']['large'] ?? null,
+            ]
+        );
     }
 }

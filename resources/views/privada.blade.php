@@ -13,16 +13,53 @@
             object-fit: contain;
             padding-top: 15px;
         }
+
         .card {
             transition: transform 0.3s;
+            background: #fff3cd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            position: relative;
         }
+
         .card:hover {
             transform: scale(1.03);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.72);
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, rgb(225, 27, 27), #f09819, rgb(16, 213, 157), rgb(20, 115, 217));
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .badge-card-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 
-<body style="background-color:whitesmoke;">
+<body>
     <div class="container">
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
             <div class="d-flex align-items-center col-md-6 mb-2 mb-md-0">
@@ -44,54 +81,93 @@
         </header>
 
         <article class="mb-5">
-            @if($favorites->count() > 0)
-                <div class="row">
-                    @foreach($favorites as $pokemon)
-                    <div class="col-md-3 mb-4">
-                        <div class="card h-100">
-                            <div class="position-absolute top-0 end-0 p-2">
-                                <form action="{{ route('favorites.toggle', $pokemon->pokemon_id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger p-1">
-                                        <i class="bi bi-heart-fill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <a href="{{ route('pokemon.show', $pokemon->pokemon_id) }}">
-                                <img src="{{ $pokemon->image_large ?? $pokemon->image_small }}"
-                                    class="card-img-top"
-                                    alt="{{ $pokemon->name }}">
-                            </a>
-                            <div class="card-body pt-3">
-                                <h5 class="card-title">{{ $pokemon->name }}</h5>
-                                <p class="card-text">
-                                    <small class="text-muted">{{ $pokemon->rarity }}</small>
-                                </p>
-                            </div>
+            <!-- Pestañas para diferentes tipos de cartas -->
+            <ul class="nav nav-tabs mb-4" id="favoritesTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pokemon-tab" data-bs-toggle="tab" data-bs-target="#pokemon" type="button">
+                        Pokémon ({{ count($pokemons) }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="trainer-tab" data-bs-toggle="tab" data-bs-target="#trainer" type="button">
+                        Consumibles ({{ count($trainers) }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="energy-tab" data-bs-toggle="tab" data-bs-target="#energy" type="button">
+                        Energías ({{ count($energies) }})
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="favoritesTabContent">
+                <!-- Pestaña Pokémon -->
+                <div class="tab-pane fade show active" id="pokemon" role="tabpanel">
+                    @if($pokemons->count() > 0)
+                    <div class="row">
+                        @foreach($pokemons as $pokemon)
+                        <div class="col-md-3 mb-4">
+                            @include('pokemon.favorite-card', [
+                            'card' => $pokemon,
+                            'type' => 'pokemon',
+                            'route' => route('pokemon.show', ['type' => 'pokemon', 'id' => $pokemon->pokemon_id])
+                            ])
                         </div>
+                        @endforeach
                     </div>
-                    @endforeach
+                    @else
+                    <div class="alert alert-info text-center">
+                        No tienes Pokémon favoritos aún
+                    </div>
+                    @endif
                 </div>
 
-                <!-- Paginación -->
-                <div class="d-flex justify-content-center">
-                    {{ $favorites->links() }}
-                </div>
-            @else
-                <div class="text-center py-5">
-                    <div class="alert alert-info">
-                        <h4><i class="bi bi-heart"></i> Aún no tienes pokémons favoritos</h4>
-                        <p class="mt-3">
-                            <a href="{{ route('pokemon.index') }}" class="btn btn-primary">
-                                <i class="bi bi-search"></i> Explorar pokémons
-                            </a>
-                        </p>
+                <!-- Pestaña Entrenadores -->
+                <div class="tab-pane fade" id="trainer" role="tabpanel">
+                    @if($trainers->count() > 0)
+                    <div class="row">
+                        @foreach($trainers as $trainer)
+                        <div class="col-md-3 mb-4">
+                            @include('pokemon.favorite-card', [
+                            'card' => $trainer,
+                            'type' => 'trainer',
+                            'route' => route('pokemon.show', ['type' => 'trainer', 'id' => $trainer->trainer_id])
+                            ])
+                        </div>
+                        @endforeach
                     </div>
+                    @else
+                    <div class="alert alert-info text-center">
+                        No tienes Entrenadores favoritos aún
+                    </div>
+                    @endif
                 </div>
-            @endif
+
+                <!-- Pestaña Energías -->
+                <div class="tab-pane fade" id="energy" role="tabpanel">
+                    @if($energies->count() > 0)
+                    <div class="row">
+                        @foreach($energies as $energy)
+                        <div class="col-md-3 mb-4">
+                            @include('pokemon.favorite-card', [
+                            'card' => $energy,
+                            'type' => 'energy',
+                            'route' => route('pokemon.show', ['type' => 'energy', 'id' => $energy->energy_id])
+                            ])
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div class="alert alert-info text-center">
+                        No tienes Energías favoritas aún
+                    </div>
+                    @endif
+                </div>
+            </div>
         </article>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

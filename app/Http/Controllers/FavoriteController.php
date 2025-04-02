@@ -4,79 +4,108 @@ namespace App\Http\Controllers;
 
 use App\Models\Favorite;
 use App\Models\Pokemon;
-use Illuminate\Http\Request;
+use App\Models\Energy;
+use App\Models\Trainer;
 use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
     //Funcion para añadir los pokemons por su Id a favoritos
-    public function toggleFavorite(Request $request, $pokemonId)
+    public function toggleFavorite($type, $id)
     {
-        //Verificacion de que el usuario ha iniciado sesion para añadir a favoritos
         if (!Auth::check()) {
-            //Si no ha iniciado sesion lo redirige a la pagina del login para que lo haga
             return redirect()->route('login')->with('error', 'Debes iniciar sesión para guardar favoritos');
         }
 
         $user = Auth::user();
-        //Busqueda del pokemon por su id si no lo encuentra lanza un error
-        $pokemon = Pokemon::where('pokemon_id', $pokemonId)->firstOrFail();
+        $validTypes = ['pokemon', 'trainer', 'energy'];
 
-        //Verificacion si el pokemon ya esta en favoritos
+        if (!in_array($type, $validTypes)) {
+            return back()->with('error', 'Tipo de carta no válido');
+        }
+
+        // Verificar si la carta existe
+        $card = match($type) {
+            'pokemon' => Pokemon::where('pokemon_id', $id)->first(),
+            'trainer' => Trainer::where('trainer_id', $id)->first(),
+            'energy' => Energy::where('energy_id', $id)->first(),
+        };
+
+        if (!$card) {
+            return back()->with('error', 'Carta no encontrada');
+        }
+
+        // Verificar si ya es favorito
         $favorite = Favorite::where('user_id', $user->id)
-            ->where('pokemon_id', $pokemon->pokemon_id)
+            ->where("{$type}_id", $id)
             ->first();
 
-        //Si ya esta agregado a favorito lo elimina y si no lo esta lo agrega a la tabla de favoritos
         if ($favorite) {
             $favorite->delete();
-            return back()->with('success', 'Pokémon eliminado de favoritos');
-        } else {
-            Favorite::create([
-                'user_id' => $user->id,
-                'pokemon_id' => $pokemon->pokemon_id
-            ]);
-            //Vuelve a la página anterior con un mensaje de que se ha añadido correctamente a favoritos
-            return back()->with('success', 'Pokémon añadido a favoritos');
+            return back()->with('success', 'Eliminado de favoritos');
         }
+
+        Favorite::create([
+            'user_id' => $user->id,
+            "{$type}_id" => $id
+        ]);
+
+        return back()->with('success', 'Añadido a favoritos');
     }
 
-    public function index()
-    {
-        try {
-            $user = Auth::user();
-
-            if (!$user) {
-                dd('Usuario no autenticado');
+        public function index()
+        {
+            try {
+                $user = Auth::user();
+        
+                if (!$user) {
+                    dd('Usuario no autenticado');
+                }
+        
+                // Obtener todos los favoritos directamente
+                $directFavorites = $user->favorites;
+                dd('Todos los favoritos:', $directFavorites);
+        
+                // Obtener Pokémon favoritos
+                $pokemonsFavoritos = $user->favoritePokemons;
+                dd('Pokémon favoritos:', $pokemonsFavoritos);
+        
+                // Obtener Entrenadores favoritos
+                $trainersFavoritos = $user->favoriteTrainers;
+                dd('Entrenadores favoritos:', $trainersFavoritos);
+        
+                // Obtener Energías favoritas
+                $energiesFavoritas = $user->favoriteEnergies;
+                dd('Energías favoritas:', $energiesFavoritas);
+        
+            } catch (\Exception $e) {
+                dd('Error:', $e->getMessage());
             }
-
-            $directFavorites = $user->favorites;
-            dd($directFavorites);
-
-            $pokemonsFavoritos = $user->favoritePokemons;
-            dd($pokemonsFavoritos);
-        } catch (\Exception $e) {
-            dd($e->getMessage());
         }
-    }
-
     //Funcion para la pagina de cada usuario y sus pokemons favoritos
     public function privatePage()
     {
-        //Verficacion del usuario, si no lo esta se redirige al login
-        if (!Auth::check()) {
+        $user = Auth::user();
+    
+        if (!$user) {
             return redirect()->route('login');
         }
-
-        //Obtiene los pokemons favoritos de cada usuario por la id del usuario
-        $favorites = Pokemon::whereHas('favoritedBy', function($query) {
-            $query->where('user_id', Auth::id());
-        })
-        //Los ordena por nombre y de 12 en 12
-        ->orderBy('name')
-        ->paginate(12);
-        
-        //retorna a la vista enviando la variable de favoritos
-        return view('privada', compact('favorites'));
+    
+        // Obtener Pokémon favoritos
+        $pokemons = Pokemon::whereHas('favorites', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+    
+        // Obtener Entrenadores favoritos
+        $trainers = Trainer::whereHas('favorites', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+    
+        // Obtener Energías favoritas
+        $energies = Energy::whereHas('favorites', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+    
+        return view('privada', compact('pokemons', 'trainers', 'energies'));
     }
 }

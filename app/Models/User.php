@@ -48,18 +48,24 @@ class User extends Authenticatable
 
     public function favorites()
     {
-        return $this->hasMany(Favorite::class, 'user_id', 'id');
+        return $this->hasMany(Favorite::class);
     }
 
     public function favoritePokemons()
     {
-        return $this->belongsToMany(
-            Pokemon::class,
-            'favorites',
-            'user_id',
-            'pokemon_id',
-            'id',
-            'pokemon_id'
-        )->withTimestamps();
+        return $this->belongsToMany(Pokemon::class, 'favorites', 'user_id', 'pokemon_id')
+            ->withTimestamps();
+    }
+
+    public function favoriteTrainers()
+    {
+        return $this->belongsToMany(Trainer::class, 'favorites', 'user_id', 'trainer_id')
+            ->withTimestamps();
+    }
+
+    public function favoriteEnergies()
+    {
+        return $this->belongsToMany(Energy::class, 'favorites', 'user_id', 'energy_id')
+            ->withTimestamps();
     }
 }

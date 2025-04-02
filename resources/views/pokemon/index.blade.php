@@ -5,28 +5,29 @@
     <!--Iniciar Sesion-->
     <div class="text-end mb-4">
         @auth
-            <div class="d-flex align-items-center justify-content-end">
-                <a href="{{ route('privada') }}" class="btn btn-success me-2">
-                    <i class="bi bi-person-circle me-1"></i>
-                    {{ Auth::user()->name }}
-                </a>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="bi bi-box-arrow-right"></i> Salir
-                    </button>
-                </form>
-            </div>
-        @else
-            <a href="{{ route('login') }}" class="btn btn-primary">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+        <div class="d-flex align-items-center justify-content-end">
+            <a href="{{ route('privada') }}" class="btn btn-success me-2">
+                <i class="bi bi-person-circle me-1"></i>
+                {{ Auth::user()->name }}
             </a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-box-arrow-right"></i> Salir
+                </button>
+            </form>
+        </div>
+        @else
+        <a href="{{ route('login') }}" class="btn btn-primary">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+        </a>
         @endauth
     </div>
     <!--Titulo de la página-->
     <div class="text-center mt-4">
         <h1 class="fw-bold">
-            <a href="{{ route('pokemon.index', ['page' => 1]) }}" class="text-dark text-decoration-none">
+            <a href="{{ route('pokemon.index', ['page' => 1]) }}"
+                class="pokemon-title">
                 Cartas Pokémon
             </a>
         </h1>
@@ -35,14 +36,21 @@
     <!-- Barra de búsqueda -->
     <form action="{{ route('pokemon.index') }}" method="GET" class="mb-4">
         <div class="input-group">
-            <img src="{{ asset('images/Poké_Ball_icon.svg.png') }}" width="30" height="30" alt="" style="margin-top: 3px;">
-            <input type="text" name="search" class="form-control" placeholder="Buscar Pokémon..." value="{{ $searchTerm ?? '' }}">
-            <input type="hidden" name="page" value="1"> <!-- Reinicia a la página 1 -->
+            <span class="input-group-text bg-white border-end-0">
+                <img src="{{ asset('images/Poké_Ball_icon.svg.png') }}" width="25" height="25" alt="" id="pokeball-icon">
+            </span>
+            <input type="text" name="search" class="form-control border-start-0" placeholder="Buscar Pokémon..." value="{{ $searchTerm ?? '' }}" id="search-input">
+            <input type="hidden" name="page" value="1">
             <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
     </form>
 
-
+    <script>
+        document.getElementById('search-input').addEventListener('input', function() {
+            let icon = document.getElementById('pokeball-icon');
+            icon.style.display = this.value ? 'none' : 'block';
+        });
+    </script>
 
     <!-- Filtros por rareza-->
     <div class="mb-4">
@@ -75,21 +83,32 @@
 
     <!-- Listado de cartas -->
     <div class="row">
-        @foreach($pokemons as $pokemon)
+        @foreach($cards as $card)
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <a href="{{ route('pokemon.show', $pokemon->pokemon_id) }}">
-                    <img src="{{ $pokemon->image_large ?? $pokemon->image_small }}"
+                <a href="{{ route('pokemon.show', ['type' => $card->card_type, 'id' => $card->{$card->card_type.'_id'}]) }}">
+                    <img src="{{ $card->image_large ?? $card->image_small }}"
                         class="card-img-top"
-                        alt="{{ $pokemon->name }}"
+                        alt="{{ $card->name }}"
                         style="max-height: 300px; object-fit: contain; padding-top: 15px;">
                 </a>
 
                 <div class="card-body pt-3">
-                    <h5 class="card-title">{{ $pokemon->name }}</h5>
+                    <h5 class="card-title">{{ $card->name }}</h5>
+                    @if($card->card_type !== 'energy')
                     <p class="card-text">
-                        <small class="text-muted">{{ $pokemon->rarity }}</small>
+                        <small class="text-muted">{{ $card->rarity ?? 'N/A' }}</small>
                     </p>
+                    @endif
+                    <span class="badge bg-secondary">
+                        @if($card->card_type === 'pokemon')
+                        Pokémon
+                        @elseif($card->card_type === 'trainer')
+                        Trainer
+                        @else
+                        Energy
+                        @endif
+                    </span>
                 </div>
             </div>
         </div>
@@ -101,20 +120,20 @@
         <nav>
             <ul class="pagination">
                 <!-- Botón Anterior -->
-                @if ($pokemons->onFirstPage())
+                @if ($cards->currentPage() == 1)
                 <li class="page-item disabled">
                     <span class="page-link">&laquo; Anterior</span>
                 </li>
                 @else
                 <li class="page-item">
-                    <a class="page-link" href="{{ $pokemons->appends(request()->query())->previousPageUrl() }}">&laquo; Anterior</a>
+                    <a class="page-link" href="{{ $cards->appends(request()->query())->url($cards->currentPage() - 1) }}">&laquo; Anterior</a>
                 </li>
                 @endif
 
                 <!-- Botón Siguiente -->
-                @if ($pokemons->hasMorePages())
+                @if ($cards->hasMorePages())
                 <li class="page-item">
-                    <a class="page-link" href="{{ $pokemons->appends(request()->query())->nextPageUrl() }}">Siguiente &raquo;</a>
+                    <a class="page-link" href="{{ $cards->appends(request()->query())->nextPageUrl() }}">Siguiente &raquo;</a>
                 </li>
                 @else
                 <li class="page-item disabled">
