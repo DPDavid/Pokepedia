@@ -22,8 +22,10 @@ class LoginController extends Controller
        Auth::login($user);
        return redirect(route('privada'));
     }
+    
     //Funcion para logearse usando solamente el email y la contraseña
     public function login(Request $request) {
+        //Credenciales necesarias para iniciar sesion
         $credentials = [
             'email'=> $request->email,
             'password'=> $request->password,

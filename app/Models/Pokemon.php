@@ -14,6 +14,7 @@ class Pokemon extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    //Campos que se pueden rellenar
     protected $fillable = [
         'pokemon_id',
         'name',
@@ -28,11 +29,13 @@ class Pokemon extends Model
         'image_large'
     ];
 
+    //Funcion relacion con favoritos uno-muchos
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'pokemon_id', 'pokemon_id');
     }   
 
+    //Funcion relacion con usuarios ninguno-muchos
     public function favoritedBy()
     {
         return $this->belongsToMany(User::class, 'favorites', 'pokemon_id', 'user_id')

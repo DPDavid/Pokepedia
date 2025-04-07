@@ -9,6 +9,7 @@ class Energy extends Model
 {
     use HasFactory;
 
+    //Campos que se pueden rellenar
     protected $fillable = [
         'energy_id',
         'name',
@@ -21,11 +22,13 @@ class Energy extends Model
         'image_large'
     ];
 
+    //Convierte los campos en arrays
     protected $casts = [
         'subtypes' => 'array',
         'legalities' => 'array'
     ];
     
+    //Funcion relacion uno muchos entre energia y favoritos (una carta puede tener muchos favoritos)
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'energy_id', 'energy_id');

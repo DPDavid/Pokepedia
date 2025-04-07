@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        //Crea la tabla con los siguientes campos
         Schema::create('energies', function (Blueprint $table) {
             $table->id();
             $table->string('energy_id')->unique();
@@ -24,6 +25,7 @@ return new class extends Migration
     }
     public function down(): void
     {
+        //Elimina la tabla energias
         Schema::dropIfExists('energies');
     }
 };

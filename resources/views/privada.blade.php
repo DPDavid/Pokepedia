@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
+        /*Estilos imagen de las cartas */
         .card-img-top {
             max-height: 300px;
             object-fit: contain;
             padding-top: 15px;
         }
 
+        /*Sombra para el contenedor de la carta y transicion de zoom*/
         .card {
             transition: transform 0.3s;
             background: #fff3cd;
@@ -22,11 +24,13 @@
             position: relative;
         }
 
+        /*Zoon de la carta y sombras cuando zoomea*/
         .card:hover {
             transform: scale(1.03);
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.72);
         }
 
+        /*Estilos en general de la página*/
         html,
         body {
             height: 100%;
@@ -50,6 +54,7 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        /*Estilos de la insignia del tipo de carta*/
         .badge-card-type {
             position: absolute;
             top: 10px;
@@ -81,7 +86,7 @@
         </header>
 
         <article class="mb-5">
-            <!-- Pestañas para diferentes tipos de cartas -->
+            <!--Pestañas para los tipos de carta -->
             <ul class="nav nav-tabs mb-4" id="favoritesTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pokemon-tab" data-bs-toggle="tab" data-bs-target="#pokemon" type="button">
@@ -101,7 +106,7 @@
             </ul>
 
             <div class="tab-content" id="favoritesTabContent">
-                <!-- Pestaña Pokémon -->
+                <!--Pestaña de pokemons -->
                 <div class="tab-pane fade show active" id="pokemon" role="tabpanel">
                     @if($pokemons->count() > 0)
                     <div class="row">
@@ -122,7 +127,7 @@
                     @endif
                 </div>
 
-                <!-- Pestaña Entrenadores -->
+                <!--Pestaña de entrenadores -->
                 <div class="tab-pane fade" id="trainer" role="tabpanel">
                     @if($trainers->count() > 0)
                     <div class="row">
@@ -143,7 +148,7 @@
                     @endif
                 </div>
 
-                <!-- Pestaña Energías -->
+                <!--Pestaña de energias -->
                 <div class="tab-pane fade" id="energy" role="tabpanel">
                     @if($energies->count() > 0)
                     <div class="row">

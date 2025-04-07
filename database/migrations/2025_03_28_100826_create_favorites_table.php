@@ -8,26 +8,26 @@ return new class extends Migration
 {
     public function up()
     {
+        //Crea la tabla con los siguietnes campos
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-            // Definir con la misma longitud que en las tablas referenciadas
             $table->string('pokemon_id', 50)->nullable();
             $table->string('trainer_id', 50)->nullable();
             $table->string('energy_id', 50)->nullable();
 
             $table->timestamps();
 
-            // Crear índices primero
+            //Crear índices primero
             $table->index('pokemon_id');
             $table->index('trainer_id');
             $table->index('energy_id');
         });
 
-        // Añadir claves foráneas en una migración separada o después de crear las tablas
+        //Añade claves foráneas en una migración separada o después de crear las tablas
         Schema::table('favorites', function (Blueprint $table) {
-            // Verificar que las tablas y columnas existan antes de crear las FKs
+            //Verificacion de que las tablas y columnas existan antes de crear las claves foraneas
             if (Schema::hasTable('pokemons') && Schema::hasColumn('pokemons', 'pokemon_id')) {
                 $table->foreign('pokemon_id')
                     ->references('pokemon_id')->on('pokemons')
@@ -53,13 +53,14 @@ return new class extends Migration
 
     public function down()
     {
-        // Eliminar las claves foráneas primero
+        //Eliminar las claves foráneas primero
         Schema::table('favorites', function (Blueprint $table) {
             $table->dropForeign(['pokemon_id']);
             $table->dropForeign(['trainer_id']);
             $table->dropForeign(['energy_id']);
         });
-
+        
+        //Elimina la tabla favoritos
         Schema::dropIfExists('favorites');
     }
 };

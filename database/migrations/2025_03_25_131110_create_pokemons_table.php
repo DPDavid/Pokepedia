@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
+        //Crea la tabla con los siguientes campos
         Schema::create('pokemons', function (Blueprint $table) {
             $table->id(); // ID autoincremental
             $table->string('pokemon_id')->unique();
@@ -27,6 +28,7 @@ return new class extends Migration
 
     public function down()
     {
+        //Elimina la tabla pokemons
         Schema::dropIfExists('pokemons');
     }
 };

@@ -26,9 +26,9 @@
         @if($type === 'pokemon')
         Pokémon
         @elseif($type === 'trainer')
-        Consumibles
+        Trainer
         @else
-        Energía
+        Energy
         @endif
     </span> 
 
