@@ -46,23 +46,27 @@ class User extends Authenticatable
         ];
     }
 
+    //Funcion relacion con favoritos uno-muchos
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
 
+    //Funcion relacion con pokemons ninguno-muchos
     public function favoritePokemons()
     {
         return $this->belongsToMany(Pokemon::class, 'favorites', 'user_id', 'pokemon_id')
             ->withTimestamps();
     }
 
+    //Funcion relacion con entrenadores ninguno-muchos
     public function favoriteTrainers()
     {
         return $this->belongsToMany(Trainer::class, 'favorites', 'user_id', 'trainer_id')
             ->withTimestamps();
     }
 
+    //Funcion relacion con energias ninguno-muchos
     public function favoriteEnergies()
     {
         return $this->belongsToMany(Energy::class, 'favorites', 'user_id', 'energy_id')

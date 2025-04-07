@@ -22,7 +22,7 @@
                 Energy Card
                 @endif
             </span>
-            
+
             <!--Boton de favoritos-->
             @auth
             <form action="{{ route('favorites.toggle', [$type, $card->{$type.'_id'}]) }}" method="POST" class="mb-3">
@@ -30,7 +30,7 @@
                 <input type="hidden" name="type" value="{{ $type }}">
                 <button type="submit" class="btn btn-danger">
                     @php
-                        $exists = Auth::user()->favorites()->where($type.'_id', $card->{$type.'_id'})->exists();
+                    $exists = Auth::user()->favorites()->where($type.'_id', $card->{$type.'_id'})->exists();
                     @endphp
                     <i class="bi bi-heart{{ $exists ? '-fill' : '' }}"></i>
                     {{ $exists ? 'Quitar de favoritos' : 'Añadir a favoritos' }}
@@ -62,7 +62,9 @@
             </div>
             @endif
 
-            <a href="{{ route('pokemon.index') }}" class="btn btn-primary mt-3">Volver al listado</a>
+            <a href="{{ url()->previous() }}" class="btn btn-primary mt-3">
+                Volver al listado
+            </a>
         </div>
     </div>
 </div>

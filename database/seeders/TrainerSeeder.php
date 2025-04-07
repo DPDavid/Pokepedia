@@ -13,24 +13,30 @@ class TrainerSeeder extends Seeder
         $basePath = database_path('pokedatabase');
         $jsonFiles = File::allFiles($basePath);
 
+        //Busqueda en el directorio todos los archivos
         foreach ($jsonFiles as $file) {
             if ($file->getExtension() !== 'json') continue;
 
+            //Si uno de los archivos no es JSON lo omite
             $data = json_decode(file_get_contents($file), true);
             if (json_last_error() !== JSON_ERROR_NONE) continue;
 
+            //Recoge el contenido del archivo y si encuentra un error lo omite
             if (isset($data[0])) {
-                foreach ($data as $item) $this->processItem($item);
+                foreach ($data as $item) $this->processTrainer($item);
             } else {
-                $this->processItem($data);
+                $this->processTrainer($data);
             }
         }
     }
 
-    protected function processItem($item)
+    //Funcion para procesar los entrenadores
+    protected function processTrainer($item)
     {
+        //Condicion para que la carta sea un entrenador
         if (($item['supertype'] ?? '') !== 'Trainer') return;
         
+        //Establece unos valores por defecto (evita errores si falta algun dato en la base de datos)
         $defaults = [
             'id' => null,
             'name' => 'Unknown',
@@ -38,16 +44,15 @@ class TrainerSeeder extends Seeder
             'artist' => 'Unknown Artist',
             'legalities' => [],
             'subtypes' => [],
-            'rules' => []
+            'rules' => [],
+            'images' => [
+                'small' => null,
+                'large' => null
+            ]
         ];
-    
         $item = array_merge($defaults, $item);
 
-        $images = $item['images'] ?? [
-            'small' => null,
-            'large' => null
-        ];
-
+        //Crea o actualiza la energia en la base de datos
         Trainer::updateOrCreate(
             ['trainer_id' => $item['id']],
             [
@@ -59,8 +64,8 @@ class TrainerSeeder extends Seeder
                 'artist' => $item['artist'],
                 'rarity' => $item['rarity'] ?? null,
                 'legalities' => json_encode($item['legalities']),
-                'image_small' => $images['small'],
-                'image_large' => $images['large'],
+                'image_small' => $item['images']['small'],
+                'image_large' => $item['images']['small'],
             ]
         );
     }

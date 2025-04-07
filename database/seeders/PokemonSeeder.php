@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -12,24 +13,31 @@ class PokemonSeeder extends Seeder
         $basePath = database_path('pokedatabase');
         $jsonFiles = File::allFiles($basePath);
 
+        //Busqueda en el directorio todos los archivos
         foreach ($jsonFiles as $file) {
             if ($file->getExtension() !== 'json') continue;
 
+            //Si uno de los archivos no es JSON lo omite
             $data = json_decode(file_get_contents($file), true);
             if (json_last_error() !== JSON_ERROR_NONE) continue;
 
+            //Recoge el contenido del archivo y si encuentra un error lo omite
             if (isset($data[0])) {
                 foreach ($data as $item) $this->processPokemon($item);
+                //Si solo hay un objeto lo procesa directamente
             } else {
                 $this->processPokemon($data);
             }
         }
     }
 
+    //Funcion para procesar los pokemons
     protected function processPokemon($item)
     {
+        //Condicion para que la carta sea un pokemon
         if (($item['supertype'] ?? '') !== 'Pokémon') return;
 
+        //Crea o actualiza el pokemon en la base de datos
         Pokemon::updateOrCreate(
             ['pokemon_id' => $item['id']],
             [
