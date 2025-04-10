@@ -65,7 +65,7 @@ class TrainerSeeder extends Seeder
                 'rarity' => $item['rarity'] ?? null,
                 'legalities' => json_encode($item['legalities']),
                 'image_small' => $item['images']['small'],
-                'image_large' => $item['images']['small'],
+                'image_large' => $item['images']['large'],
             ]
         );
     }

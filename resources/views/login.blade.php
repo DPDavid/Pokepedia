@@ -12,25 +12,31 @@
 
 <body>
     <main class="container align-center p-5">
+        <!--Post para enviar los datos-->
         <form method="POST" action="{{route('iniciar-sesion')}}">
             @csrf
+            <!--Campo del email-->
             <div class="mb-3">
                 <label for="emailInput" class="form-label">Email</label>
                 <input type="email" class="form-control" id="emailInput"
                     name="email" required autocomplete="disable">
             </div>
+            <!--Campo de la contraseña-->
             <div class="mb-3">
                 <label for="passwordInput" class="form-label">Password</label>
                 <input type="password" class="form-control" id="passwordInput"
                     name="password" required>
             </div>
+            <!--Checkbox para dejar iniciada las sesion-->
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="rememberCheck" name="remember">
                 <label class="form-check-label" for="rememberCheck">Mantener sesión iniciada</label>
             </div>
+            <!--Mensaje sobre la cuenta y enlace para registrarse-->
             <div>
                 <p>¿No tiene cuenta?<a href="{{route('registro')}}">Regístrate</a></p>
             </div>
+            <!--Boton para volver a la pagina principal-->
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">Login</button>
                 <a href="{{ route('pokemon.index') }}" class="btn btn-secondary">Volver al principio</a>

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->index('energy_id');
         });
 
-        //Añade claves foráneas en una migración separada o después de crear las tablas
+        //Añade claves foraneas en una migración separada o después de crear las tablas
         Schema::table('favorites', function (Blueprint $table) {
             //Verificacion de que las tablas y columnas existan antes de crear las claves foraneas
             if (Schema::hasTable('pokemons') && Schema::hasColumn('pokemons', 'pokemon_id')) {

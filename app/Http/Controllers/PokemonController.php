@@ -92,7 +92,7 @@ class PokemonController extends Controller
 
     //Funcion para mostrar las cartas
     public function show($id)
-    {
+    {   
         //Se busca la id de la carta seleccionada
         $card = Pokemon::where('pokemon_id', $id)->first();
         $type = 'pokemon';
