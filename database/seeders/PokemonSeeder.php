@@ -3,55 +3,44 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Http;
 use App\Models\Pokemon;
-use Illuminate\Support\Facades\File;
 
 class PokemonSeeder extends Seeder
 {
     public function run()
     {
-        $basePath = database_path('pokedatabase');
-        $jsonFiles = File::allFiles($basePath);
+        $page = 1;
 
-        //Busqueda en el directorio todos los archivos
-        foreach ($jsonFiles as $file) {
-            if ($file->getExtension() !== 'json') continue;
+        do {
+            $response = Http::get("https://api.pokemontcg.io/v2/cards", [
+                'page' => $page,
+                'pageSize' => 250,
+                'q' => 'supertype:Pokémon',
+            ]);
 
-            //Si uno de los archivos no es JSON lo omite
-            $data = json_decode(file_get_contents($file), true);
-            if (json_last_error() !== JSON_ERROR_NONE) continue;
+            $cards = $response->json()['data'] ?? [];
 
-            //Recoge el contenido del archivo y si encuentra un error lo omite
-            if (isset($data[0])) {
-                foreach ($data as $item) $this->processPokemon($item);
-                //Si solo hay un objeto lo procesa directamente
-            } else {
-                $this->processPokemon($data);
+            foreach ($cards as $card) {
+                Pokemon::updateOrCreate(
+                    ['pokemon_id' => $card['id']],
+                    [
+                        'name' => $card['name'],
+                        'supertype' => $card['supertype'],
+                        'level' => $card['level'] ?? null,
+                        'hp' => isset($card['hp']) ? intval($card['hp']) : 0,
+                        'evolves_from' => $card['evolvesFrom'] ?? null,
+                        'flavor_text' => $card['flavorText'] ?? null,
+                        'rarity' => $card['rarity'] ?? null,
+                        'national_pokedex_number' => $card['nationalPokedexNumbers'][0] ?? null,
+                        'image_small' => $card['images']['small'] ?? null,
+                        'image_large' => $card['images']['large'] ?? null,
+                    ]
+                );
             }
-        }
-    }
 
-    //Funcion para procesar los pokemons
-    protected function processPokemon($item)
-    {
-        //Condicion para que la carta sea un pokemon
-        if (($item['supertype'] ?? '') !== 'Pokémon') return;
-
-        //Crea o actualiza el pokemon en la base de datos
-        Pokemon::updateOrCreate(
-            ['pokemon_id' => $item['id']],
-            [
-                'name' => $item['name'],
-                'supertype' => $item['supertype'],
-                'level' => $item['level'] ?? null,
-                'hp' => isset($item['hp']) ? intval($item['hp']) : 0,
-                'evolves_from' => $item['evolvesFrom'] ?? null,
-                'flavor_text' => $item['flavorText'] ?? null,
-                'rarity' => $item['rarity'] ?? null,
-                'national_pokedex_number' => $item['nationalPokedexNumbers'][0] ?? null,
-                'image_small' => $item['images']['small'] ?? null,
-                'image_large' => $item['images']['large'] ?? null,
-            ]
-        );
+            $page++;
+        } while (count($cards) > 0);
+        //while ($page <= 5);
     }
 }

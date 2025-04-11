@@ -2,68 +2,42 @@
 
 namespace Database\Seeders;
 
-use App\Models\Energy;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use App\Models\Energy;
 
 class EnergySeeder extends Seeder
 {
     public function run()
     {
-        $basePath = database_path('pokedatabase');
-        $jsonFiles = File::allFiles($basePath);
+        $page = 1;
 
-        //Busqueda en el directorio todos los archivos
-        foreach ($jsonFiles as $file) {
-            if ($file->getExtension() !== 'json') continue;
+        do {
+            $response = Http::get("https://api.pokemontcg.io/v2/cards", [
+                'page' => $page,
+                'pageSize' => 250,
+                'q' => 'supertype:Energy',
+            ]);
 
-            //Si uno de los archivos no es JSON lo omite
-            $data = json_decode(file_get_contents($file), true);
-            if (json_last_error() !== JSON_ERROR_NONE) continue;
+            $cards = $response->json()['data'] ?? [];
 
-            //Recoge el contenido del archivo y si encuentra un error lo omite
-            if (isset($data[0])) {
-                foreach ($data as $item) $this->processEnergy($item);
-                //Si solo hay un objeto lo procesa directamente
-            } else {
-                $this->processEnergy($data);
+            foreach ($cards as $card) {
+                Energy::updateOrCreate(
+                    ['energy_id' => $card['id']],
+                    [
+                        'name' => $card['name'],
+                        'supertype' => $card['supertype'],
+                        'subtypes' => $card['subtypes'] ?? [],
+                        'number' => $card['number'] ?? null,
+                        'artist' => $card['artist'] ?? 'Unknown Artist',
+                        'legalities' => $card['legalities'] ?? [],
+                        'image_small' => $card['images']['small'] ?? null,
+                        'image_large' => $card['images']['large'] ?? null,
+                    ]
+                );
             }
-        }
-    }
 
-    //Funcion para procesar las energias
-    protected function processEnergy($item)
-    {
-        //Condicion para que la carta sea una energia
-        if (($item['supertype'] ?? '') !== 'Energy') {
-            return;
-        }
-
-        //Establece unos valores por defecto (evita errores si falta algun dato en la base de datos)
-        $defaultValues = [
-            'subtypes' => [],
-            'legalities' => [],
-            'artist' => 'Unknown Artist',
-            'images' => [
-                'small' => null,
-                'large' => null
-            ]
-        ];
-        $item = array_merge($defaultValues, $item);
-
-        //Crea o actualiza la energia en la base de datos
-        Energy::updateOrCreate(
-            ['energy_id' => $item['id']],
-            [
-                'name' => $item['name'],
-                'supertype' => $item['supertype'],
-                'subtypes' => json_encode($item['subtypes']),
-                'number' => $item['number'],
-                'artist' => $item['artist'],
-                'legalities' => json_encode($item['legalities']),
-                'image_small' => $item['images']['small'],
-                'image_large' => $item['images']['large'],
-            ]
-        );
+            $page++;
+        } while (count($cards) > 0);
     }
 }
