@@ -5,14 +5,13 @@ use App\Http\Controllers\PokemonController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\FavoriteController;
 
-Route::view("/login","login")->name('login');
-Route::view("/registro","register")->name('registro');
+Route::view("/login", "login")->name('login');
+Route::view("/registro", "register")->name('registro');
 Route::get("/privada", [FavoriteController::class, 'privatePage'])->middleware('auth')->name('privada');
 
-Route::post('/validar-registro',[LoginController::class,'register'])->name('validar-registro');
-Route::post('/iniciar-sesion',[LoginController::class,'login'])->name('iniciar-sesion');
+Route::post('/validar-registro', [LoginController::class, 'register'])->name('validar-registro');
+Route::post('/iniciar-sesion', [LoginController::class, 'login'])->name('iniciar-sesion');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
 
 Route::prefix('')->group(function () {
     Route::get('/', [PokemonController::class, 'index'])->name('pokemon.index');

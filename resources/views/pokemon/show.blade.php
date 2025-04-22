@@ -94,7 +94,7 @@
             @endif
 
             <!--Boton para volver a la pagina anterior-->
-            <a href="{{ url()->previous() }}" class="btn btn-primary mt-3">
+            <a href="{{ route('pokemon.index') }}" class="btn btn-primary mt-3">
                 Volver al listado
             </a>
         </div>
