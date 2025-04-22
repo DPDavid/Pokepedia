@@ -10,17 +10,21 @@ class PokemonSeeder extends Seeder
 {
     public function run()
     {
+        //Inicia la pagina en 1
         $page = 1;
-
+        //Bucle para la API de pokemon, el maximo permitido de cartas son 250 por pagina
         do {
             $response = Http::get("https://api.pokemontcg.io/v2/cards", [
                 'page' => $page,
                 'pageSize' => 250,
+                //Filtro para que solo coja las que tenga la etiqueta pokemon
                 'q' => 'supertype:Pokémon',
             ]);
 
+            //Extrae el array de las cartas
             $cards = $response->json()['data'] ?? [];
 
+            //Por cada carta la guarda en la base de datos o la actualiza
             foreach ($cards as $card) {
                 Pokemon::updateOrCreate(
                     ['pokemon_id' => $card['id']],
@@ -38,9 +42,11 @@ class PokemonSeeder extends Seeder
                     ]
                 );
             }
-
+            //Incrementa el numero de la pagina para las siguientes 250 cartas
             $page++;
-        } while (count($cards) > 0);
+        }
+        //El bucle continua hasta que no haya ninguna carta
+        while (count($cards) > 0);
         //while ($page <= 5);
     }
 }
