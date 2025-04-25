@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
             PokemonSeeder::class,
             TrainerSeeder::class,
             EnergySeeder::class,
+            AttackSeeder::class,
+            WeaknessSeeder::class,
         ]);
     }
 }

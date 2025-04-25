@@ -26,7 +26,7 @@ class PokemonSeeder extends Seeder
 
             //Por cada carta la guarda en la base de datos o la actualiza
             foreach ($cards as $card) {
-                Pokemon::updateOrCreate(
+                $pokemon = Pokemon::updateOrCreate(
                     ['pokemon_id' => $card['id']],
                     [
                         'name' => $card['name'],
