@@ -30,6 +30,12 @@
             border-radius: 12px;
         }
 
+        .card-img-top {
+            max-height: 300px;
+            object-fit: contain;
+            padding-top: 15px;
+        }
+
         /*Zoon de la carta y sombras cuando zoomea*/
         .card:hover {
             transform: scale(1.03);
@@ -170,26 +176,44 @@
 </head>
 
 <body>
+    <div class="position-fixed top-0 end-0 p-3 d-flex justify-content-end" style="z-index: 999;">
+        <label class="switch">
+            <input type="checkbox" id="checkbox">
+            <span class="slider">
+                <span class="star star_1"></span>
+                <span class="star star_2"></span>
+                <span class="star star_3"></span>
+                <svg class="cloud" viewBox="0 0 64 64">
+                    <path d="M20 50h24a14 14 0 0 0 0-28 20 20 0 0 0-40 4 14 14 0 0 0 16 24z" fill="#fff" />
+                </svg>
+            </span>
+        </label>
+    </div>
+
     <div class="container">
         @yield('content')
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Escuchar el evento de cambio en el switch
-        document.getElementById('checkbox').addEventListener('change', function() {
-            // Obtener el body
+        // Al cargar la página, verifica el estado del switch en localStorage
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const checkbox = document.getElementById('checkbox');
             const body = document.body;
+            const overlay = document.getElementById('dark-overlay');
 
-            // Cambiar el fondo según el estado del switch
-            if (this.checked) {
-                // Fondo original cuando el switch está activado
+            // Verifica si el estado del switch está guardado en localStorage
+            const backgroundState = localStorage.getItem('backgroundState');
+
+            // Si existe, aplica el fondo correspondiente
+            if (backgroundState === 'dark') {
+                checkbox.checked = true;
                 body.style.background = 'linear-gradient(135deg, rgb(225, 27, 27), #f09819, rgb(16, 213, 157), rgb(20, 115, 217))';
                 body.style.backgroundAttachment = 'fixed';
                 body.style.display = 'flex';
                 body.style.flexDirection = 'column';
-                body.style.alignItems = 'center';
+                body.style.alignItems = 'center'
             } else {
-                // Fondo oscuro cuando el switch está desactivado
+                checkbox.checked = false;
                 body.style.background = 'linear-gradient(135deg, #2a2a2a, #3e1b6e, #000, #3d0e7b)';
                 body.style.backgroundAttachment = 'fixed';
                 body.style.display = 'flex';
@@ -197,8 +221,34 @@
                 body.style.alignItems = 'center';
             }
         });
-    </script>
 
+        // Escuchar el evento de cambio en el switch
+        document.getElementById('checkbox').addEventListener('change', function () {
+            // Obtener el body
+            const body = document.body;
+
+            // Cambiar el fondo según el estado del switch
+            if (this.checked) {
+                // Fondo oscuro cuando el switch está activado
+                body.style.background = 'linear-gradient(135deg, rgb(225, 27, 27), #f09819, rgb(16, 213, 157), rgb(20, 115, 217))';
+                body.style.backgroundAttachment = 'fixed';
+                body.style.display = 'flex';
+                body.style.flexDirection = 'column';
+                body.style.alignItems = 'center'
+                // Guardar el estado del fondo en localStorage
+                localStorage.setItem('backgroundState', 'dark');
+            } else {
+                // Fondo original cuando el switch está desactivado
+                body.style.background = 'linear-gradient(135deg, #2a2a2a, #3e1b6e, #000, #3d0e7b)';
+                body.style.backgroundAttachment = 'fixed';
+                body.style.display = 'flex';
+                body.style.flexDirection = 'column';
+                body.style.alignItems = 'center';
+                // Guardar el estado del fondo en localStorage
+                localStorage.setItem('backgroundState', 'light');
+            }
+        });
+    </script>
 </body>
 
 </html>

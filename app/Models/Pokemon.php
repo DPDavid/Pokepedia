@@ -46,8 +46,16 @@ class Pokemon extends Model
         return $this->hasMany(Weakness::class, 'pokemon_id');
     }
 
+    public function resistances()
+    {
+        return $this->hasMany(Resistances::class, 'pokemon_id');
+    }
     public function attacks()
     {
         return $this->hasMany(Attack::class, 'pokemon_id', 'pokemon_id');
+    }
+    public function retreatCosts()
+    {
+        return $this->hasMany(Retreat::class, 'pokemon_id', 'pokemon_id');
     }
 }

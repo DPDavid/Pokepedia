@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +14,8 @@ class DatabaseSeeder extends Seeder
             EnergySeeder::class,
             AttackSeeder::class,
             WeaknessSeeder::class,
+            ResistancesSeeder::class,
+            RetreatSeeder::class,
         ]);
     }
 }

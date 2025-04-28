@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
 use App\Models\Attack;
+use App\Models\Pokemon;
 
 class AttackSeeder extends Seeder
 {
@@ -26,6 +27,9 @@ class AttackSeeder extends Seeder
 
             //Recorre cada carta y guarda los ataques
             foreach ($cards as $card) {
+                // Verifica que el Pokémon existe en la tabla pokemons
+                $pokemon = Pokemon::where('pokemon_id', $card['id'])->first();
+
                 //Si la carta tiene ataques, los guarda
                 if (!empty($card['attacks'])) {
                     foreach ($card['attacks'] as $attackData) {
