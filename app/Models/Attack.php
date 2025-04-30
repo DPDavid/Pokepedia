@@ -9,6 +9,7 @@ class Attack extends Model
 {
     use HasFactory;
 
+    //Campos rellenables
     protected $fillable = [
         'pokemon_id',
         'name',
@@ -18,6 +19,7 @@ class Attack extends Model
         'text',
     ];
 
+    //Funcion relacion con el modelo pokemon
     public function pokemon()
     {
         return $this->belongsTo(Pokemon::class, 'pokemon_id', 'pokemon_id');

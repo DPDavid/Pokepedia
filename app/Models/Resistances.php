@@ -9,17 +9,17 @@ class Resistances extends Model
 {
     use HasFactory;
 
-    // El nombre de la tabla asociada al modelo
+    //El nombre de la tabla asociada al modelo
     protected $table = 'resistances';
 
-    // Los atributos que son asignables masivamente
+    //Campos que se pueden rellenar
     protected $fillable = [
         'pokemon_id',
         'type',
         'value',
     ];
 
-    // La relación con el modelo Pokemon
+    //Funcion relacion con el modelo pokemon
     public function pokemon()
     {
         return $this->belongsTo(Pokemon::class, 'pokemon_id', 'pokemon_id');

@@ -75,6 +75,8 @@
                             <p><strong>Evoluciona de:</strong> {{ $card->evolves_from ?? 'N/A' }}</p>
                             <p><strong>Número Pokédex:</strong> {{ $card->national_pokedex_number ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
+
+                            <!--Condicion para cuando tiene una debilidad-->
                             @if (!empty($card->weaknesses))
                             <p><strong>Debilidad:</strong></p>
                             @foreach ($card->weaknesses as $weakness)
@@ -87,19 +89,20 @@
                             <p><strong>Debilidad:</strong> N/A</p>
                             @endif
 
-
+                            <!--Condicion para cuando tenga resistencias a un tipo-->
                             @if (!empty($card->resistances))
                             <p><strong>Resistencias:</strong></p>
-                            @foreach ($card->resistances as $resistance) <!-- Aquí usamos 'resistance' en lugar de 'resistances' -->
+                            @foreach ($card->resistances as $resistance)
                             <img src="{{ asset('images/energy/' . $resistance['type'] . '.png') }}"
                                 alt="{{ $resistance['type'] }}" title="{{ $resistance['type'] }}"
                                 style="height: 24px; width: 24px; margin-right: 4px;">
-                            <span class="badge bg-danger">{{ $resistance['value'] }}</span> <!-- Aquí usamos 'resistance' también -->
+                            <span class="badge bg-danger">{{ $resistance['value'] }}</span>
                             @endforeach
                             @else
                             <p><strong>Resistencias:</strong> N/A </p>
                             @endif
 
+                            <!--Condicion para cuando tienen coste de retirada-->
                             @if ($card->retreatCosts && count($card->retreatCosts) > 0)
                             <p><strong>Coste de Retirada:</strong></p>
                             @foreach ($card->retreatCosts as $retreat)
@@ -111,12 +114,12 @@
                             <p><strong>Coste de Retirada:</strong> N/A</p>
                             @endif
 
-
-
+                            <!--Condicion para las cartas que son trainers(consumibles)-->
                             @elseif($type === 'trainer')
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
+                            <!--Si la carta no es un pokemon o un trainer, entonces es una energia-->
                             @else
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>

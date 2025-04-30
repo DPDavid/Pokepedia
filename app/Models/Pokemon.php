@@ -41,19 +41,26 @@ class Pokemon extends Model
         return $this->belongsToMany(User::class, 'favorites', 'pokemon_id', 'user_id')
             ->withTimestamps();
     }
+
+    //Funcion relacion con las debilidades uno-muchos
     public function weaknesses()
     {
         return $this->hasMany(Weakness::class, 'pokemon_id');
     }
 
+    //Funcion relacion con resistencias uno-mucho
     public function resistances()
     {
         return $this->hasMany(Resistances::class, 'pokemon_id');
     }
+
+    //Funcion relacion con ataques uno-muchos
     public function attacks()
     {
         return $this->hasMany(Attack::class, 'pokemon_id', 'pokemon_id');
     }
+
+    //Funcion relacion con el coste de retirada uno-muchos
     public function retreatCosts()
     {
         return $this->hasMany(Retreat::class, 'pokemon_id', 'pokemon_id');
