@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
-    //Funcion para añadir los pokemons por su Id a favoritos
+    //------------Funcion para añadir los pokemons a favoritos------------
     public function toggleFavorite($type, $id)
     {
         //Verificacion si se ha iniciado sesion
