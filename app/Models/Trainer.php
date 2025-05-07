@@ -9,7 +9,7 @@ class Trainer extends Model
 {
     use HasFactory;
 
-    //Campos que se pueden rellenar
+    //Definimos los campos rellenables
     protected $fillable = [
         'trainer_id',
         'name',
@@ -31,7 +31,7 @@ class Trainer extends Model
         'legalities' => 'array'
     ];
 
-    //Funcion relacion con favoritos uno-muchos
+    //Funcion relacion con favoritos uno-muchos (una carta de entrenador puede ser fav de varios usuarios)
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'trainer_id', 'trainer_id');

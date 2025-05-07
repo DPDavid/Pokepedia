@@ -9,14 +9,14 @@ class Weakness extends Model
 {
     use HasFactory;
 
-    //Campos rellenables
+   //Definimos los campos rellenable
     protected $fillable = [
         'pokemon_id',
         'type',
         'value',
     ];
 
-    //Funcion relacion con el modelo pokemon
+    //Funcion relacion con el modelo pokemon muchos-uno (las debilidades estan asociadas a una carta pokemon)
     public function pokemon()
     {
         return $this->belongsTo(Pokemon::class, 'pokemon_id');

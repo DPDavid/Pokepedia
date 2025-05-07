@@ -15,15 +15,18 @@ class FavoriteController extends Controller
     {
         //Verificacion si se ha iniciado sesion
         if (!Auth::check()) {
+            //Si el usuario no ha iniciado sesion lo devuelve al login
             return redirect()->route('login')->with('error', 'Debes iniciar sesión para guardar favoritos');
         }
 
+        //Obtencion del usuario
         $user = Auth::user();
         //Tipo de carta permitido
         $validTypes = ['pokemon', 'trainer', 'energy'];
 
         //Validacion de la carta
         if (!in_array($type, $validTypes)) {
+            //Si no es valido devuelve un error
             return back()->with('error', 'Tipo de carta no válido');
         }
 
@@ -34,7 +37,7 @@ class FavoriteController extends Controller
             'energy' => Energy::where('energy_id', $id)->first(),
         };
 
-        //Error de que el tipo de la carta no se ha encontrado
+        //Si el tipo de carta no se encuentra devuelve un error
         if (!$card) {
             return back()->with('error', 'Carta no encontrada');
         }
@@ -44,13 +47,13 @@ class FavoriteController extends Controller
             ->where("{$type}_id", $id)
             ->first();
 
-        //Si ya esta en favorito y es pulsado de nuevo la elimina
+        //Si ya esta en favorito es eliminada, sirve para alterna las cartas en favoritos
         if ($favorite) {
             $favorite->delete();
             return back()->with('success', 'Eliminado de favoritos');
         }
 
-        //Si no esta en favoritos  crea la carta en la tabla favoritos
+        //Si no esta en favoritos crea la carta en la tabla favoritos
         Favorite::create([
             'user_id' => $user->id,
             "{$type}_id" => $id
@@ -59,62 +62,34 @@ class FavoriteController extends Controller
         return back()->with('success', 'Añadido a favoritos');
     }
 
-    public function index()
-    {
-        try {
-            $user = Auth::user();
-            
-            //Verificacion inicio de sesion
-            if (!$user) {
-                dd('Usuario no autenticado');
-            }
-
-            //Obtener todos los favoritos directamente
-            $directFavorites = $user->favorites;
-            dd('Todos los favoritos:', $directFavorites);
-
-            //Obtener Pokémon favoritos
-            $pokemonsFavoritos = $user->favoritePokemons;
-            dd('Pokémon favoritos:', $pokemonsFavoritos);
-
-            //Obtener Entrenadores favoritos
-            $trainersFavoritos = $user->favoriteTrainers;
-            dd('Entrenadores favoritos:', $trainersFavoritos);
-
-            //Obtener Energías favoritas
-            $energiesFavoritas = $user->favoriteEnergies;
-            dd('Energías favoritas:', $energiesFavoritas);
-        } catch (\Exception $e) {
-            dd('Error:', $e->getMessage());
-        }
-    }
-
-    //Funcion para la pagina de cada usuario y sus cartas favoritas
+    //------------Funcion para las cartas favoritas de cada usuario------------
     public function privatePage()
     {
+        //Obtencion del usuario
         $user = Auth::user();
 
         //Verificacion inicio de sesion
         if (!$user) {
+            //Si no esta logeado lo manda para que lo haga
             return redirect()->route('login');
         }
 
-        //Obtener Pokémon favoritos
+        //Busca los pokemons que el usuario ha marcado como favoritos
         $pokemons = Pokemon::whereHas('favorites', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
 
-        //Obtener Entrenadores favoritos
+        //Busca los entrenadores que el usuario ha marcado como favoritos
         $trainers = Trainer::whereHas('favorites', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
 
-        //Obtener Energías favoritas
+        //Busca las energias que el usuario ha marcado como favoritos
         $energies = Energy::whereHas('favorites', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
 
-        //Retorna a la vista de la cuenta las cartas que se hayan añadido
+        //Retorna a la vista con las cartas favoritas del usuario
         return view('privada', compact('pokemons', 'trainers', 'energies'));
     }
 }

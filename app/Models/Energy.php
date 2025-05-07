@@ -9,7 +9,7 @@ class Energy extends Model
 {
     use HasFactory;
 
-    //Campos que se pueden rellenar
+    //Definimos los campos rellenables
     protected $fillable = [
         'energy_id',
         'name',

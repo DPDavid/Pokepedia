@@ -25,6 +25,5 @@ Route::middleware('auth')->group(function () {
         ->name('favorites.toggle')
         ->where('type', 'pokemon|trainer|energy');
     
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::get('/privada', [FavoriteController::class, 'privatePage'])->name('privada');
 });
