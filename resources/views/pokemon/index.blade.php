@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+
     <!--Iniciar Sesion-->
     <div class="text-end mb-4">
         <!--Solo se muestra si el usuario ha iniciado sesion-->
@@ -21,13 +22,15 @@
                 </button>
             </form>
         </div>
-        @else
+
         <!--Si la sesion no se ha iniciado, muestra  un boton para inicar sesion-->
+        @else
         <a href="{{ route('login') }}" class="btn btn-primary">
             <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
         </a>
         @endauth
     </div>
+
     <!--Titulo de la página-->
     <div class="text-center mt-4">
         <h1 class="fw-bold">
@@ -63,16 +66,10 @@
 
     <!-- Filtros por rareza-->
     <div class="mb-4">
-        <!--Titulo-->
-        <h5>Filtrar por rareza:</h5>
-        <div class="dropdown">
-            <!--Desplegable con mensaje default, si se selecciona uno se muestra ese-->
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="rarityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ $currentRarity ?? 'Todas las rarezas' }}
-            </button>
-            <!--Todas las rarezas de cartas de pokemon-->
-            <ul class="dropdown-menu" aria-labelledby="rarityDropdown" style="max-height: 400px; overflow-y: auto;">
-                <li><a class="dropdown-item" href="{{ route('pokemon.index') }}">Todas</a></li>
+        <form action="{{ route('pokemon.index') }}" method="GET" class="mb-4 d-flex gap-2">
+            <input type="hidden" name="search" value="{{ request('search') }}">
+            <select name="rarity" class="form-select w-auto">
+                <option value="">Todas las rarezas</option>
                 @foreach([
                 'Common', 'Uncommon', 'Rare', 'Rare Holo', 'Promo',
                 'Rare Holo EX', 'Rare Ultra', 'Rare Holo GX', 'Rare Rainbow',
@@ -81,17 +78,16 @@
                 'Illustration Rare', 'Shiny Rare', 'Special Illustration Rare',
                 'Hyper Rare', 'Trainer Gallery Rare Holo'
                 ] as $rarity)
-                <!--Listado de todas las rarezas de cartas-->
-                <li>
-                    <a class="dropdown-item" href="{{ route('pokemon.index', ['rarity' => $rarity, 'search' => request('search')]) }}">
-                        {{ $rarity }}
-                    </a>
-                </li>
+                <option value="{{ $rarity }}" {{ request('rarity') === $rarity ? 'selected' : '' }}>
+                    {{ $rarity }}
+                </option>
                 @endforeach
-            </ul>
-
-        </div>
+            </select>
+            <!-- Boton para filtrar la rareza -->
+            <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+        </form>
     </div>
+
     <!-- Listado de cartas -->
     <div class="row">
         @foreach($cards as $card)
@@ -133,27 +129,34 @@
     <div class="d-flex justify-content-center align-items-center mt-4">
         <nav>
             <ul class="pagination">
-                <!-- Botón Anterior -->
-                @if ($cards->currentPage() == 1)
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo; Anterior</span>
+                <!-- Boton primera pagina-->
+                <li class="page-item {{ $cards->onFirstPage() ? 'disabled' : '' }}">
+                    <a class="page-link" href="{{ $cards->appends(request()->query())->url(1) }}" aria-label="Primera">
+                        <span aria-hidden="true">&laquo;&laquo; Primera</span>
+                    </a>
                 </li>
+                <!-- Boton anterior -->
+                @if ($cards->onFirstPage())
+                <li class="page-item disabled"><span class="page-link">&laquo; Anterior</span></li>
                 @else
                 <li class="page-item">
-                    <a class="page-link" href="{{ $cards->appends(request()->query())->url($cards->currentPage() - 1) }}">&laquo; Anterior</a>
+                    <a class="page-link" href="{{ $cards->appends(request()->query())->previousPageUrl() }}">&laquo; Anterior</a>
                 </li>
                 @endif
-
-                <!-- Botón Siguiente -->
+                <!-- Boton siguiente -->
                 @if ($cards->hasMorePages())
                 <li class="page-item">
                     <a class="page-link" href="{{ $cards->appends(request()->query())->nextPageUrl() }}">Siguiente &raquo;</a>
                 </li>
                 @else
-                <li class="page-item disabled">
-                    <span class="page-link">Siguiente &raquo;</span>
-                </li>
+                <li class="page-item disabled"><span class="page-link">Siguiente &raquo;</span></li>
                 @endif
+                <!-- Boton ultima pagina -->
+                <li class="page-item {{ !$cards->hasMorePages() ? 'disabled' : '' }}">
+                    <a class="page-link" href="{{ $cards->appends(request()->query())->url($cards->lastPage()) }}" aria-label="Última">
+                        <span aria-hidden="true">Última &raquo;&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

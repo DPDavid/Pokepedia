@@ -223,7 +223,7 @@
         });
 
         // Escuchar el evento de cambio en el switch
-        document.getElementById('checkbox').addEventListener('change', function () {
+        document.getElementById('checkbox').addEventListener('change', function() {
             // Obtener el body
             const body = document.body;
 

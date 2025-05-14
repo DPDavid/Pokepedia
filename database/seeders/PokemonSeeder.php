@@ -26,6 +26,11 @@ class PokemonSeeder extends Seeder
 
             //Por cada carta la guarda en la base de datos o la actualiza
             foreach ($cards as $card) {
+                $prices = $card['tcgplayer']['prices']['holofoil'] ?? null;
+                $price_low = isset($prices['low']) ? (float) $prices['low'] : null;
+                $price_high = isset($prices['high']) ? (float) $prices['high'] : null;
+                $url = $card['tcgplayer']['url'] ?? null;
+
                 $pokemon = Pokemon::updateOrCreate(
                     ['pokemon_id' => $card['id']],
                     [
@@ -39,6 +44,9 @@ class PokemonSeeder extends Seeder
                         'national_pokedex_number' => $card['nationalPokedexNumbers'][0] ?? null,
                         'image_small' => $card['images']['small'] ?? null,
                         'image_large' => $card['images']['large'] ?? null,
+                        'price_low' => isset($prices['low']) ? (float) $prices['low'] : null,
+                        'price_high' => isset($prices['high']) ? (float) $prices['high'] : null,
+                        'tcgplayer_url' => $url,
                     ]
                 );
             }

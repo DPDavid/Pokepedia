@@ -30,9 +30,12 @@ class Pokemon extends Model
         'rarity',
         'national_pokedex_number',
         'image_small',
-        'image_large'
+        'image_large',
+        'price_low',
+        'price_high',
+        'tcgplayer_url',
     ];
-
+    
     //Funcion relacion con favoritos uno-muchos (una carta de pokemon puede ser marcado como fav por muchos usuarios)
     public function favorites()
     {

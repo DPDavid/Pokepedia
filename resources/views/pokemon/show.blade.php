@@ -3,6 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
+
         <!-- Titulo de la página -->
         <div class="text-center mt-4">
             <h1 class="fw-bold">
@@ -18,7 +19,6 @@
             <div class="d-flex flex-column align-items-start">
                 <!-- Nombre de la carta -->
                 <h1 class="mb-3">{{ $card->name }}</h1>
-
                 <!-- Etiqueta para las cartas de los pokemons -->
                 <span class="badge bg-secondary mb-3">
                     @if($type === 'pokemon')
@@ -30,12 +30,12 @@
                     @endif
                 </span>
 
-                <!-- Botón de favoritos -->
+                <!-- Boton de favoritos -->
                 @auth
                 <!-- Uso del id según el tipo de carta -->
                 <form action="{{ route('favorites.toggle', [$type, $card->{$type.'_id'}]) }}" method="POST" class="mb-3">
                     @csrf
-                    <input type="hidden" name="type" value="{{ $type }}">
+                    <input type="hidden" name="redirect_to" value="{{ request()->fullUrl() }}">
                     <button type="submit" class="btn btn-danger">
                         @php
                         // Verificación de si el usuario tiene esa carta en favoritos
@@ -59,9 +59,17 @@
         <!-- Información de la carta y la imagen de la carta -->
         <div class="col-md-12 mt-4">
             <div class="row">
+
                 <!-- Imagen de la carta a la izquierda -->
                 <div class="col-md-6">
-                    <img src="{{ $card->image_large }}" class="img-fluid" alt="{{ $card->name }}" style="max-height: 600px;">
+                    <a href="{{ $card->image_large }}">
+                        <img
+                            src="{{ $card->image_large }}"
+                            class="img-fluid"
+                            alt="{{ $card->name }}"
+                            style="max-height: 600px;"
+                            title="Precio: Mín: ${{ $card->price_low ?? 'N/A' }} - Máx: ${{ $card->price_high ?? 'N/A' }}">
+                    </a>
                 </div>
 
                 <!-- Información detallada de la carta a la derecha -->
@@ -71,7 +79,6 @@
                             <!-- Condición para cuando es un pokemon -->
                             @if($type === 'pokemon')
                             <p><strong>HP:</strong> {{ $card->hp }}</p>
-                            <p><strong>Nivel:</strong> {{ $card->level ?? 'N/A' }}</p>
                             <p><strong>Evoluciona de:</strong> {{ $card->evolves_from ?? 'N/A' }}</p>
                             <p><strong>Número Pokédex:</strong> {{ $card->national_pokedex_number ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
@@ -119,11 +126,13 @@
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
-                            <!--Si la carta no es un pokemon o un trainer, entonces es una energia-->
                             @else
+                            <!--Si la carta no es un pokemon o un trainer, entonces es una energia-->
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>
-                            <p><strong>Tipo de energia:</strong> {{ $card->subtypes ?? 'N/A' }}</p>
+                            <p><strong>Tipo de energia:</strong>
+                                {{ is_array($card->subtypes) ? implode(', ', $card->subtypes) : ($card->subtypes ?? 'N/A') }}
+                            </p>
                             @endif
                         </div>
                     </div>
@@ -137,6 +146,7 @@
                     </div>
                     @endif
 
+                    <!--Condicion para los ataques de las cartas de los pokemons-->
                     @if ($card->attacks && count($card->attacks) > 0)
                     <div class="card mt-3">
                         <div class="card-header">
@@ -164,14 +174,25 @@
                         </ul>
                     </div>
                     @endif
+
+                    <!--Condicion para si la carta tiene url de mercado-->
+                    @if ($card->tcgplayer_url)
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <a href="{{ $card->tcgplayer_url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-underline text-primary fs-4">
+                                <i class="bi bi-link"></i> Ver detalles de precios
+                            </a>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- Botón para volver a la página anterior -->
-        <a href="{{ route('pokemon.index') }}" class="btn btn-primary mt-3">
-            Volver al listado
-        </a>
+        <button onclick="history.back()" class="btn btn-primary mt-3">
+            <i class="bi bi-arrow-left-circle"></i> Volver atrás
+        </button>
     </div>
 </div>
 @endsection
