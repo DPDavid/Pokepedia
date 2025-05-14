@@ -37,6 +37,7 @@ class PokemonController extends Controller
             $cards->push($item);
         });
 
+
         //------------Filtro de los entrenadores (consumibles)------------
         $trainers = Trainer::query();
         //Si hay busqueda, se filtra por nombre
@@ -86,7 +87,7 @@ class PokemonController extends Controller
             $perPage,
             //Pagina actual
             $page,
-            //Mantener los filtros en la URL
+            //Mantiene los filtros en la URL
             [
                 'path' => $request->url(),
                 'query' => $request->query()
