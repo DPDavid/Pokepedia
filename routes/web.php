@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PokemonController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\CardCreatorController;
+
+Route::get('/generador-carta', [CardCreatorController::class, 'index'])->name('card.form');
+Route::post('/generador-carta', [CardCreatorController::class, 'generate'])->name('card.generate');
 
 Route::view("/login", "login")->name('login');
 Route::view("/registro", "register")->name('registro');

@@ -38,6 +38,7 @@ class PokemonSeeder extends Seeder
                         'supertype' => $card['supertype'],
                         'level' => $card['level'] ?? null,
                         'hp' => isset($card['hp']) ? intval($card['hp']) : 0,
+                        'type' => $card['types'][0] ?? null,
                         'evolves_from' => $card['evolvesFrom'] ?? null,
                         'flavor_text' => $card['flavorText'] ?? null,
                         'rarity' => $card['rarity'] ?? null,

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('supertype');
             $table->string('level')->nullable();
             $table->integer('hp');
+            $table->string('type')->nullable();
             $table->string('evolves_from')->nullable();
             $table->text('flavor_text')->nullable();
             $table->string('rarity')->nullable();
