@@ -89,14 +89,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Hide default HTML checkbox */
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
 
-        /* The slider */
         .slider {
             position: absolute;
             cursor: pointer;
@@ -176,6 +174,7 @@
 </head>
 
 <body>
+    <!--Swicth para el modo oscuro/claro-->
     <div class="position-fixed top-0 end-0 p-3 d-flex justify-content-end" style="z-index: 999;">
         <label class="switch">
             <input type="checkbox" id="checkbox">
@@ -195,16 +194,16 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Al cargar la página, verifica el estado del switch en localStorage
+        //Al cargar la página, verifica el estado del switch en localStorage
         window.addEventListener('DOMContentLoaded', (event) => {
             const checkbox = document.getElementById('checkbox');
             const body = document.body;
             const overlay = document.getElementById('dark-overlay');
 
-            // Verifica si el estado del switch está guardado en localStorage
+            //Verifica si el estado del switch está guardado en localStorage
             const backgroundState = localStorage.getItem('backgroundState');
 
-            // Si existe, aplica el fondo correspondiente
+            //Si existe, aplica el fondo correspondiente
             if (backgroundState === 'dark') {
                 checkbox.checked = true;
                 body.style.background = 'linear-gradient(135deg, rgb(225, 27, 27), #f09819, rgb(16, 213, 157), rgb(20, 115, 217))';
@@ -222,35 +221,35 @@
             }
         });
 
-        // Escuchar el evento de cambio en el switch
+        //Escuchar el evento de cambio en el switch
         document.getElementById('checkbox').addEventListener('change', function() {
-            // Obtener el body
+            //Obtener el body
             const body = document.body;
 
-            // Cambiar el fondo según el estado del switch
+            //Cambiar el fondo según el estado del switch
             if (this.checked) {
-                // Fondo oscuro cuando el switch está activado
+                //Fondo oscuro cuando el switch está activado
                 body.style.background = 'linear-gradient(135deg, rgb(225, 27, 27), #f09819, rgb(16, 213, 157), rgb(20, 115, 217))';
                 body.style.backgroundAttachment = 'fixed';
                 body.style.display = 'flex';
                 body.style.flexDirection = 'column';
                 body.style.alignItems = 'center'
-                // Guardar el estado del fondo en localStorage
+                //Guardar el estado del fondo en localStorage
                 localStorage.setItem('backgroundState', 'dark');
             } else {
-                // Fondo original cuando el switch está desactivado
+                //Fondo original cuando el switch está desactivado
                 body.style.background = 'linear-gradient(135deg, #2a2a2a, #3e1b6e, #000, #3d0e7b)';
                 body.style.backgroundAttachment = 'fixed';
                 body.style.display = 'flex';
                 body.style.flexDirection = 'column';
                 body.style.alignItems = 'center';
-                // Guardar el estado del fondo en localStorage
+                //Guardar el estado del fondo en localStorage
                 localStorage.setItem('backgroundState', 'light');
             }
         });
     </script>
 
-     @yield('scripts')
+    @yield('scripts')
 </body>
 
 </html>

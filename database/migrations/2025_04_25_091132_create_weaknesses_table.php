@@ -8,21 +8,22 @@ return new class extends Migration
 {
     public function up()
     {
+        //Crea la tabla con los siguientes campos
         Schema::create('weaknesses', function (Blueprint $table) {
             $table->id();
-            // Asegúrate de que pokemon_id sea de tipo string
-            $table->string('pokemon_id'); 
+            $table->string('pokemon_id');
             $table->string('type');
             $table->string('value');
             $table->timestamps();
 
-            // Si quieres agregar la restricción de clave foránea puedes hacerlo así:
+            //Clave foranea con pokemon_id
             $table->foreign('pokemon_id')->references('pokemon_id')->on('pokemons')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
+        //Elimina la tabla de debilidades
         Schema::dropIfExists('weaknesses');
     }
 };

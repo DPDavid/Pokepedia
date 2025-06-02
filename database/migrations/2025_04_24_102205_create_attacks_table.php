@@ -9,6 +9,7 @@ return new class extends Migration
 
     public function up()
     {
+        //Crea la tabla con los siguientes campos
         Schema::create('attacks', function (Blueprint $table) {
             $table->id();
             $table->string('pokemon_id');
@@ -18,13 +19,15 @@ return new class extends Migration
             $table->string('damage')->nullable();
             $table->text('text')->nullable();
             $table->timestamps();
-    
+
+            //Clave foranea con pokemon_id
             $table->foreign('pokemon_id')->references('pokemon_id')->on('pokemons')->onDelete('cascade');
         });
     }
-    
+
     public function down(): void
     {
+        //Elimina la tabla de ataques
         Schema::dropIfExists('attacks');
     }
 };

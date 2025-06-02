@@ -11,40 +11,42 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     //---------Funcion para registrarse---------
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         //Crea la instancia del modelo user
-       $user = new User();
-       //Asigna a user los valores del formulario
-       $user-> name  = $request->name;
-       $user-> email  = $request->email;
-       //Encriptado de la contraseña antes de guardar en la base de datos
-       $user-> password  = Hash::make($request->password);
+        $user = new User();
+        //Asigna a user los valores del formulario
+        $user->name  = $request->name;
+        $user->email  = $request->email;
+        //Encriptado de la contraseña antes de guardar en la base de datos
+        $user->password  = Hash::make($request->password);
 
-       //Guarda el usuario en la base de datos
-       $user->save();
+        //Guarda el usuario en la base de datos
+        $user->save();
 
-       //Inicia sesion con el usuario creado
-       Auth::login($user);
-       //Redirige al usuario a la ruta
-       return redirect(route('privada'));
+        //Inicia sesion con el usuario creado
+        Auth::login($user);
+        //Redirige al usuario a la ruta
+        return redirect(route('privada'));
     }
-    
+
     //---------Funcion para logearse---------
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         //Credenciales necesarias para iniciar sesion
         $credentials = [
-            'email'=> $request->email,
-            'password'=> $request->password,
+            'email' => $request->email,
+            'password' => $request->password,
         ];
-    
+
         //Verifica si se marcó el checkbox
         $remember = ($request->has('remember') ? true : false);
 
         //Intenta autenticar al usuario con las credenciales
-        if(Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials, $remember)) {
             //Si la autenticacion es exitosa, regenera el ID de sesión
             $request->session()->regenerate();
-    
+
             //Redirige al usuario a la ruta
             return redirect()->intended(route('privada'));
         } else {
@@ -54,7 +56,8 @@ class LoginController extends Controller
     }
 
     //---------Funcion para cerrar sesion---------
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         //Cierra sesion del usuario logeado
         Auth::logout();
 

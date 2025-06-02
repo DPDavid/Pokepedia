@@ -4,22 +4,22 @@
 <div class="container">
     <div class="row">
 
-        <!-- Titulo de la página -->
+        <!--Titulo de la pagina-->
         <div class="text-center mt-4">
             <h1 class="fw-bold">
-                <!-- El titulo sirve de enlace para volver al inicio de la página -->
+                <!--Enlace para volver a la pagina principal-->
                 <a href="{{ route('pokemon.index', ['page' => 1]) }}" class="pokemon-title">
                     PokePedia
                 </a>
             </h1>
         </div>
 
-        <!-- Contenedor para el nombre del Pokémon, la etiqueta y el botón de favoritos alineados a la izquierda -->
+        <!--Contenedor para el nombre de la carta, la etiqueta y el boton de favoritos-->
         <div class="col-md-12 mt-3">
             <div class="d-flex flex-column align-items-start">
                 <!-- Nombre de la carta -->
                 <h1 class="mb-3">{{ $card->name }}</h1>
-                <!-- Etiqueta para las cartas de los pokemons -->
+                <!-- Etiqueta para identificar la carta que es -->
                 <span class="badge bg-secondary mb-3">
                     @if($type === 'pokemon')
                     Pokémon Card
@@ -30,9 +30,8 @@
                     @endif
                 </span>
 
-                <!-- Boton de favoritos -->
+                <!-- Boton de favoritos (visible si ha iniciado sesion)-->
                 @auth
-                <!-- Uso del id según el tipo de carta -->
                 <form action="{{ route('favorites.toggle', [$type, $card->{$type.'_id'}]) }}" method="POST" class="mb-3">
                     @csrf
                     <input type="hidden" name="redirect_to" value="{{ request()->fullUrl() }}">
@@ -41,14 +40,14 @@
                         // Verificación de si el usuario tiene esa carta en favoritos
                         $exists = Auth::user()->favorites()->where($type.'_id', $card->{$type.'_id'})->exists();
                         @endphp
-                        <!-- Logo del corazón, si ya está añadida el corazón está relleno -->
+                        <!--Logo del corazon, si ya esta añadida el corazon está relleno-->
                         <i class="bi bi-heart{{ $exists ? '-fill' : '' }}"></i>
-                        <!-- Cambio del texto dependiendo de si el usuario tiene o no la carta en favoritos -->
+                        <!--Cambio del texto dependiendo de si el usuario tiene o no la carta en favoritos-->
                         {{ $exists ? 'Quitar de favoritos' : 'Añadir a favoritos' }}
                     </button>
                 </form>
                 @else
-                <!-- Cuando el usuario no ha iniciado sesión, cambia la frase y el botón redirige a la ventana para hacerlo -->
+                <!--Boton para iniciar sesion si no esta logeado-->
                 <a href="{{ route('login') }}" class="btn btn-danger mb-3">
                     <i class="bi bi-heart"></i> Inicia sesión para guardar favoritos
                 </a>
@@ -56,7 +55,7 @@
             </div>
         </div>
 
-        <!-- Información de la carta y la imagen de la carta -->
+        <!--Contenedor e información de la carta-->
         <div class="col-md-12 mt-4">
             <div class="row">
 
@@ -72,18 +71,18 @@
                     </a>
                 </div>
 
-                <!-- Información detallada de la carta a la derecha -->
+                <!--Información detallada de la carta-->
                 <div class="col-md-6">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <!-- Condición para cuando es un pokemon -->
+                            <!--Informacion especifica si es una carta pokemon-->
                             @if($type === 'pokemon')
                             <p><strong>HP:</strong> {{ $card->hp }}</p>
                             <p><strong>Evoluciona de:</strong> {{ $card->evolves_from ?? 'N/A' }}</p>
                             <p><strong>Número Pokédex:</strong> {{ $card->national_pokedex_number ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
 
-                            <!--Condicion para cuando tiene una debilidad-->
+                            <!--Debilidad-->
                             @if (!empty($card->weaknesses))
                             <p><strong>Debilidad:</strong></p>
                             @foreach ($card->weaknesses as $weakness)
@@ -96,7 +95,7 @@
                             <p><strong>Debilidad:</strong> N/A</p>
                             @endif
 
-                            <!--Condicion para cuando tenga resistencias a un tipo-->
+                            <!--Resistencias-->
                             @if (!empty($card->resistances))
                             <p><strong>Resistencias:</strong></p>
                             @foreach ($card->resistances as $resistance)
@@ -109,7 +108,7 @@
                             <p><strong>Resistencias:</strong> N/A </p>
                             @endif
 
-                            <!--Condicion para cuando tienen coste de retirada-->
+                            <!--Coste de retirada-->
                             @if ($card->retreatCosts && count($card->retreatCosts) > 0)
                             <p><strong>Coste de Retirada:</strong></p>
                             @foreach ($card->retreatCosts as $retreat)
@@ -121,13 +120,14 @@
                             <p><strong>Coste de Retirada:</strong> N/A</p>
                             @endif
 
-                            <!--Condicion para las cartas que son trainers(consumibles)-->
+                            <!--Informacion especifica si es una carta de entrenador-->
                             @elseif($type === 'trainer')
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>
                             <p><strong>Rareza:</strong> {{ $card->rarity ?? 'N/A' }}</p>
                             @else
-                            <!--Si la carta no es un pokemon o un trainer, entonces es una energia-->
+
+                            <!--Informacion especifica si es una carta de energia-->
                             <p><strong>Numero de carta:</strong> {{ $card->number ?? 'N/A' }}</p>
                             <p><strong>Arte:</strong> {{ $card->artist ?? 'N/A' }}</p>
                             <p><strong>Tipo de energia:</strong>
@@ -137,7 +137,7 @@
                         </div>
                     </div>
 
-                    <!-- Condición para si la carta tiene una descripción -->
+                    <!--Descripcion de la carta-->
                     @if($card->flavor_text)
                     <div class="card">
                         <div class="card-body">
@@ -146,7 +146,7 @@
                     </div>
                     @endif
 
-                    <!--Condicion para los ataques de las cartas de los pokemons-->
+                    <!--Contenedor de ataques, solo si la carta es de tipo pokemon-->
                     @if ($card->attacks && count($card->attacks) > 0)
                     <div class="card mt-3">
                         <div class="card-header">
@@ -175,7 +175,7 @@
                     </div>
                     @endif
 
-                    <!--Condicion para si la carta tiene url de mercado-->
+                    <!--Enlace externo al mercado de cartas TCG-->
                     @if ($card->tcgplayer_url)
                     <div class="card mt-3">
                         <div class="card-body">
@@ -189,7 +189,7 @@
             </div>
         </div>
 
-        <!-- Botón para volver a la página anterior -->
+        <!--Boton para volver a la pagina anterior-->
         <button onclick="history.back()" class="btn btn-primary mt-3">
             <i class="bi bi-arrow-left-circle"></i> Volver atrás
         </button>

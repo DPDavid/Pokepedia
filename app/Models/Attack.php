@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attack extends Model
 {
-    //
     use HasFactory;
 
     //Definimos los campos rellenables
@@ -20,7 +19,7 @@ class Attack extends Model
         'text',
     ];
 
-    //Funcion relacion con el modelo pokemon (Un atauqe pertenece a un pokemon)
+    //Funcion relacion con el modelo pokemon (Un ataque pertenece a un solo pokemon)
     public function pokemon()
     {
         return $this->belongsTo(Pokemon::class, 'pokemon_id', 'pokemon_id');

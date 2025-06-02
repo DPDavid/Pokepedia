@@ -62,7 +62,7 @@ class FavoriteController extends Controller
         ]);
 
         return redirect(request('redirect_to', route('pokemon.index')))
-        ->with('success', 'Añadido a favoritos');    
+            ->with('success', 'Añadido a favoritos');
     }
 
     //------------Funcion para las cartas favoritas de cada usuario------------
