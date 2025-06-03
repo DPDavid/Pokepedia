@@ -28,7 +28,7 @@
         </div>
         <!--Si el usuario no esta autentificado, boton para logear -->
         @else
-        <a href="{{ route('login') }}" class="btn btn-primary">
+        <a href="{{ route('login') }}" class="btn btn-primary mb-2">
             <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
         </a>
         @endauth
@@ -57,14 +57,6 @@
             <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
     </form>
-
-    <!--Script para ocultar la pokeball al escribir en la barra-->
-    <script>
-        document.getElementById('search-input').addEventListener('input', function() {
-            let icon = document.getElementById('pokeball-icon');
-            icon.style.display = this.value ? 'none' : 'block';
-        });
-    </script>
 
     <!--Filtros de busqueda-->
     <div class="mb-4">
@@ -140,7 +132,7 @@
             <div class="card h-100">
                 <!--Enlace para acceder a la vista de la carta-->
                 <a href="{{ route('pokemon.show', ['type' => $card->card_type, 'id' => $card->{$card->card_type.'_id'}]) }}">
-                    <inlg src="{{ $card->image_large ?? $card->image_small }}" class="card-img-top" alt="{{ $card->name }}" style="max-height: 300px; object-fit: contain; padding-top: 15px;">
+                    <img src="{{ $card->image_large ?? $card->image_small }}" class="card-img-top" alt="{{ $card->name }}" style="max-height: 300px; object-fit: contain; padding-top: 15px;">
                 </a>
                 <div class="card-body pt-3">
                     <!--Nombre de la carta-->

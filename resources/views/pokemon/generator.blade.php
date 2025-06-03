@@ -2,8 +2,11 @@
 
 @section('content')
 <div class="container">
+
+    <!--Titulo de la pagina-->
     <div class="text-center mt-4">
         <h1 class="fw-bold">
+            <!--Enlace para volver a pagina principal-->
             <a href="{{ route('pokemon.index') }}" class="pokemon-title">
                 PokePedia
             </a>
@@ -11,6 +14,7 @@
         <p class="text-white-50">Crea tus propias cartas personalizadas de Pokémon</p>
     </div>
 
+    <!--Muestra los errores de validacion del formulario-->
     @if($errors->any())
     <div class="alert alert-danger mt-3">
         <ul class="mb-0">
@@ -27,20 +31,13 @@
             <form action="{{ route('card.generate') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
+                    <!--Nombre de la carta-->
                     <div class="col-12">
                         <label for="name" class="form-label text-white">Nombre de la Carta</label>
                         <input type="text" name="name" id="name" class="form-control" placeholder="Ej. Pikachu EX" required>
                     </div>
 
-                    <div class="col-12">
-                        <label for="type" class="form-label text-white">Tipo</label>
-                        <select name="type" id="type" class="form-select" required>
-                            <option value="pokemon">Pokémon</option>
-                            <option value="trainer">Entrenador</option>
-                            <option value="energy">Energía</option>
-                        </select>
-                    </div>
-
+                    <!--Plantilla de la carta-->
                     <div class="col-12">
                         <label for="template" class="form-label text-white">Plantilla</label>
                         <div class="position-relative">
@@ -54,11 +51,13 @@
                         </div>
                     </div>
 
+                    <!--Selector del color de fondo de la imagen-->
                     <div class="col-12">
                         <label for="bg_color" class="form-label text-white">Color de Fondo</label>
                         <input type="color" name="bg_color" id="bg_color" class="form-control form-control-color" value="#ffffff" title="Elige un color de fondo">
                     </div>
 
+                    <!--Rareza de la carta-->
                     <div class="col-12">
                         <label for="rarity" class="form-label text-white">Rareza</label>
                         <select name="rarity" id="rarity" class="form-select">
@@ -72,49 +71,54 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Debilidades -->
+
+                    <!--Debilidades-->
                     <div class="col-md-6">
                         <label for="weakness_type" class="form-label text-white">Debilidad</label>
                         <div class="input-group">
                             <select name="weakness_type" id="weakness_type" class="form-select">
                                 <option value="">Ninguna</option>
-                                @foreach(['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Fighting', 'Dark', 'Metal', 'Fairy', 'Dragon'] as $type)
+                                @foreach(['Fire', 'Water', 'Grass', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Fairy', 'Dragon'] as $type)
                                 <option value="{{ strtolower($type) }}">{{ $type }}</option>
                                 @endforeach
                             </select>
-                            <input type="number" name="weakness_amount" id="weakness_amount" class="form-control" placeholder="Cantidad" min="0" max="100" style="max-width: 100px;">
+                            <input type="number" name="weakness_amount" id="weakness_amount" class="form-control" placeholder="Cantidad" min="0" max="40" style="max-width: 100px;">
                         </div>
                     </div>
 
-                    <!-- Resistencias -->
+                    <!--Resistencia-->
                     <div class="col-md-6">
                         <label for="resistance_type" class="form-label text-white">Resistencia</label>
                         <div class="input-group">
                             <select name="resistance_type" id="resistance_type" class="form-select">
                                 <option value="">Ninguna</option>
-                                @foreach(['Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Fighting', 'Dark', 'Metal', 'Fairy', 'Dragon'] as $type)
+                                @foreach(['Fire', 'Water', 'Grass', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Fairy', 'Dragon'] as $type)
                                 <option value="{{ strtolower($type) }}">{{ $type }}</option>
                                 @endforeach
                             </select>
-                            <input type="number" name="resistance_amount" id="resistance_amount" class="form-control" placeholder="Cantidad" min="-100" max="100" style="max-width: 100px;">
+                            <input type="number" name="resistance_amount" id="resistance_amount" class="form-control" placeholder="Cantidad" min="0" max="20" style="max-width: 100px;">
                         </div>
                     </div>
 
+                    <!--Vida o HP-->
                     <div class="col-12">
                         <label for="hp" class="form-label text-white">HP</label>
                         <input type="number" name="hp" id="hp" class="form-control" placeholder="Ej. 120" required>
                     </div>
 
+                    <!--Descripcion de la carta-->
                     <div class="col-12">
                         <label for="description" class="form-label text-white">Descripción</label>
                         <input type="text" name="description" id="description" class="form-control" placeholder="Texto de la carta">
                     </div>
 
+                    <!--Subida de la imagen-->
                     <div class="col-12">
                         <label for="image" class="form-label text-white">Imagen</label>
                         <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
                     </div>
 
+                    <!--Botones para limpiar los campos y generar la carta-->
                     <div class="col-12 d-flex justify-content-end gap-2">
                         <button type="reset" class="btn btn-outline-secondary">Limpiar</button>
                         <button type="submit" class="btn btn-primary">Generar Carta</button>

@@ -1,12 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Variables para manejar el estado
+document.addEventListener('DOMContentLoaded', function () {
+    //Variables para manejar el estado
     let lastUploadedImage = null;
     let currentTemplate = 'pokemoncard1';
     const preview = document.getElementById('preview-image');
     const templateIcon = document.getElementById('template-icon');
     const templateSelect = document.getElementById('template');
 
-    // Mapeo de plantillas a sus respectivos tipos de energía (asegúrate que coincida con tus nombres de archivo)
+    //Mapeo de plantillas al tipo de energia
     const templateEnergyMap = {
         'pokemoncard1': 'lightning',
         'pokemoncard2': 'grass',
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'pokemoncard5': 'water'
     };
 
-    // Función para cargar una imagen y devolver una Promise
+    //Funcion para cargar la imagen
     function loadImage(src) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para actualizar el icono de plantilla
+    //Funcion para actualizar el icono de la energia
     function updateTemplateIcon() {
         if (!templateSelect || !templateIcon) return;
-        
+
         const selectedTemplate = templateSelect.value;
         const energyType = templateEnergyMap[selectedTemplate];
-        
+
         if (energyType) {
             // Añadir timestamp para evitar caché
             const timestamp = new Date().getTime();
@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para actualizar la vista previa con todos los elementos
+    //Funcion que actualiza la vista previa de las cartas
     async function updatePreview() {
         if (!preview) return;
 
-        // Actualizar el icono del selector primero
+        //Refresca el icono
         updateTemplateIcon();
 
         const canvas = document.createElement('canvas');
@@ -57,20 +57,28 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.width = 350;
         canvas.height = 488;
 
-        // 1. Rellenar con el color de fondo
+        //Dibuja la plantilla base transparente
+        try {
+            const templateImg = await loadImage(`/images/templates/${currentTemplate}.png`);
+            ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+        } catch (e) {
+            console.error('Error loading template image:', e);
+        }
+
+        //Rellena el area de la imagen con el color del fondo
         const bgColor = document.getElementById('bg_color')?.value || '#ffffff';
         ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 2. Dibujar la imagen del Pokémon si existe
+        //Area de la imagen en la vista previa
+        const imgAreaX = 30;
+        const imgAreaY = 70;
+        const imgAreaWidth = 290;
+        const imgAreaHeight = 200;
+        ctx.fillRect(imgAreaX, imgAreaY, imgAreaWidth, imgAreaHeight);
+
+        //Dibuja la imagen de la carta si existe
         if (lastUploadedImage) {
-            // Área de la imagen en la vista previa
-            const imgAreaX = 30;
-            const imgAreaY = 70;
-            const imgAreaWidth = 290;
-            const imgAreaHeight = 200;
-
-            // Calcular dimensiones manteniendo relación de aspecto
+            //Calcula dimensiones manteniendo relación de aspecto
             const ratio = lastUploadedImage.width / lastUploadedImage.height;
             let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
 
@@ -93,37 +101,39 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
 
-        // 3. Dibujar debilidad si existe
+        //Dibuja el icono de debilidad si se selecciona uno
         const weaknessType = document.getElementById('weakness_type')?.value;
         const weaknessAmount = document.getElementById('weakness_amount')?.value;
         if (weaknessType && weaknessAmount) {
             try {
                 const weaknessIcon = await loadImage(`/images/energy/${weaknessType}.png`);
-                ctx.drawImage(weaknessIcon, 30, 420, 25, 25);
+                const iconY = 540;
+                ctx.drawImage(weaknessIcon, 50, iconY, 25, 25);
                 ctx.fillStyle = '#000';
                 ctx.font = '16px Arial';
-                ctx.fillText(`-${weaknessAmount}`, 60, 440);
+                ctx.fillText(`-${weaknessAmount}`, 80, iconY + 20);
             } catch (e) {
                 console.error('Error loading weakness icon:', e);
             }
         }
 
-        // 4. Dibujar resistencia si existe
+        //Dibuja el icono de la resistencia si se selecciona uno
         const resistanceType = document.getElementById('resistance_type')?.value;
         const resistanceAmount = document.getElementById('resistance_amount')?.value;
         if (resistanceType && resistanceAmount) {
             try {
                 const resistanceIcon = await loadImage(`/images/energy/${resistanceType}.png`);
-                ctx.drawImage(resistanceIcon, 100, 420, 25, 25);
+                const iconY = 540;
+                ctx.drawImage(resistanceIcon, 50, iconY, 25, 25);
                 ctx.fillStyle = '#000';
                 ctx.font = '16px Arial';
-                ctx.fillText(`-${resistanceAmount}`, 130, 440);
+                ctx.fillText(`-${resistanceAmount}`, 80, iconY + 20);
             } catch (e) {
                 console.error('Error loading resistance icon:', e);
             }
         }
 
-        // 5. Dibujar la plantilla encima
+        //Vuelve a dibujar la plantilla encima 
         try {
             const templateImg = await loadImage(`/images/templates/${currentTemplate}.png`);
             ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
@@ -133,25 +143,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Maneja el cambio de plantilla
+    //Maneja el cambio de plantilla
     if (templateSelect) {
-        templateSelect.addEventListener('change', function() {
+        templateSelect.addEventListener('change', function () {
             currentTemplate = this.value;
-            console.log('Plantilla cambiada a:', currentTemplate); // Para depuración
+            console.log('Plantilla cambiada a:', currentTemplate);
             updatePreview();
         });
     }
 
-    // Maneja el cambio de imagen subida
+    //Maneja el cambio de imagen subida
     const imageInput = document.getElementById('image');
     if (imageInput) {
-        imageInput.addEventListener('change', function(e) {
+        imageInput.addEventListener('change', function (e) {
             if (e.target.files && e.target.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     lastUploadedImage = new Image();
                     lastUploadedImage.src = event.target.result;
-                    lastUploadedImage.onload = function() {
+                    lastUploadedImage.onload = function () {
                         updatePreview();
                     };
                 };
@@ -160,13 +170,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Maneja el cambio de color
+    //Maneja el cambio de color
     const bgColorInput = document.getElementById('bg_color');
     if (bgColorInput) {
         bgColorInput.addEventListener('input', updatePreview);
     }
 
-    // Maneja cambios en debilidad/resistencia
+    //Maneja el cambio de la descripcion
+    const descriptionInput = document.getElementById('description');
+    const previewImage = document.getElementById('preview-image');
+    descriptionInput.addEventListener('input', function() {
+        console.log('Descripción actualizada');
+    });
+
+    //Maneja los cambios en debilidades/resistencias
     const weaknessTypeInput = document.getElementById('weakness_type');
     const weaknessAmountInput = document.getElementById('weakness_amount');
     const resistanceTypeInput = document.getElementById('resistance_type');
@@ -177,26 +194,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (resistanceTypeInput) resistanceTypeInput.addEventListener('change', updatePreview);
     if (resistanceAmountInput) resistanceAmountInput.addEventListener('input', updatePreview);
 
-    // Maneja el reset del formulario
+    //Maneja el reset del formulario
     const form = document.querySelector('form');
     if (form) {
-        form.addEventListener('reset', function() {
+        form.addEventListener('reset', function () {
             // Restablecer valores por defecto
             currentTemplate = 'pokemoncard1';
             lastUploadedImage = null;
 
-            // Esperar un momento para que el reset complete
+            //Esperar un momento para que el reset complete
             setTimeout(() => {
                 if (preview) {
                     preview.src = '/images/templates/pokemoncard1.png';
                 }
                 updateTemplateIcon();
-                console.log('Formulario reiniciado'); // Para depuración
+                console.log('Formulario reiniciado');
             }, 50);
         });
     }
 
-    // Inicializar vista previa
+    //Inicializa la vista previa al cargar
     updatePreview();
-    console.log('Script de vista previa cargado'); // Para depuración
+    console.log('Script de vista previa cargado');
 });
