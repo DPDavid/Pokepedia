@@ -53,23 +53,23 @@
             <div class="tab-pane fade show active" id="pokemon" role="tabpanel">
                 <!--Condicion para cuando tenga algun pokemon añadido a favoritos-->
                 @if($pokemons->count() > 0)
-                            <!--Contenido de la pestaña pokemon-->
-                            <div class="row">
-                                @foreach($pokemons as $pokemon)
-                                                <div class="col-md-3 mb-4">
-                                                    @include('pokemon.favorite-card', [
-                                                        'card' => $pokemon,
-                                                        'type' => 'pokemon',
-                                                        'route' => route('pokemon.show', ['type' => 'pokemon', 'id' => $pokemon->pokemon_id])
-                                                    ])
-                                                </div>
-                                @endforeach
-                            </div>
-                            <!--Si no cumple la concicion muestra un mensaje en pantalla-->
-                @else
-                    <div class="alert alert-info text-center">
-                        No tienes pokemons favoritos aún
+                <!--Contenido de la pestaña pokemon-->
+                <div class="row">
+                    @foreach($pokemons as $pokemon)
+                    <div class="col-md-3 mb-4">
+                        @include('pokemon.favorite-card', [
+                        'card' => $pokemon,
+                        'type' => 'pokemon',
+                        'route' => route('pokemon.show', ['type' => 'pokemon', 'id' => $pokemon->pokemon_id])
+                        ])
                     </div>
+                    @endforeach
+                </div>
+                <!--Si no cumple la concicion muestra un mensaje en pantalla-->
+                @else
+                <div class="alert alert-info text-center">
+                    No tienes pokemons favoritos aún
+                </div>
                 @endif
             </div>
 
@@ -77,23 +77,23 @@
             <div class="tab-pane fade" id="trainer" role="tabpanel">
                 <!--Condicion para cuando tenga algun consumible-entrenador añadido a favoritos-->
                 @if($trainers->count() > 0)
-                            <!--Contenido de la pestaña consumible-->
-                            <div class="row">
-                                @foreach($trainers as $trainer)
-                                                <div class="col-md-3 mb-4">
-                                                    @include('pokemon.favorite-card', [
-                                                        'card' => $trainer,
-                                                        'type' => 'trainer',
-                                                        'route' => route('pokemon.show', ['type' => 'trainer', 'id' => $trainer->trainer_id])
-                                                    ])
-                                                </div>
-                                @endforeach
-                            </div>
-                            <!--Si no cumple la concicion muestra un mensaje en pantalla-->
-                @else
-                    <div class="alert alert-info text-center">
-                        No tienes consumibles-entrenadores favoritos aún
+                <!--Contenido de la pestaña consumible-->
+                <div class="row">
+                    @foreach($trainers as $trainer)
+                    <div class="col-md-3 mb-4">
+                        @include('pokemon.favorite-card', [
+                        'card' => $trainer,
+                        'type' => 'trainer',
+                        'route' => route('pokemon.show', ['type' => 'trainer', 'id' => $trainer->trainer_id])
+                        ])
                     </div>
+                    @endforeach
+                </div>
+                <!--Si no cumple la concicion muestra un mensaje en pantalla-->
+                @else
+                <div class="alert alert-info text-center">
+                    No tienes consumibles-entrenadores favoritos aún
+                </div>
                 @endif
             </div>
 
@@ -101,23 +101,23 @@
             <div class="tab-pane fade" id="energy" role="tabpanel">
                 <!--Condicion para cuando tenga alguna energia añadido a favoritos-->
                 @if($energies->count() > 0)
-                            <!--Contenido de la pestaña energias-->
-                            <div class="row">
-                                @foreach($energies as $energy)
-                                                <div class="col-md-3 mb-4">
-                                                    @include('pokemon.favorite-card', [
-                                                        'card' => $energy,
-                                                        'type' => 'energy',
-                                                        'route' => route('pokemon.show', ['type' => 'energy', 'id' => $energy->energy_id])
-                                                    ])
-                                                </div>
-                                @endforeach
-                            </div>
-                            <!--Si no cumple la concicion muestra un mensaje en pantalla-->
-                @else
-                    <div class="alert alert-info text-center">
-                        No tienes energías favoritas aún
+                <!--Contenido de la pestaña energias-->
+                <div class="row">
+                    @foreach($energies as $energy)
+                    <div class="col-md-3 mb-4">
+                        @include('pokemon.favorite-card', [
+                        'card' => $energy,
+                        'type' => 'energy',
+                        'route' => route('pokemon.show', ['type' => 'energy', 'id' => $energy->energy_id])
+                        ])
                     </div>
+                    @endforeach
+                </div>
+                <!--Si no cumple la concicion muestra un mensaje en pantalla-->
+                @else
+                <div class="alert alert-info text-center">
+                    No tienes energías favoritas aún
+                </div>
                 @endif
             </div>
         </div>

@@ -51,6 +51,16 @@
                         </div>
                     </div>
 
+                    <!--Selector del tipo de carta que es-->
+                    <div class="col-12">
+                        <label for="type" class="form-label text-white">Tipo</label>
+                        <select name="type" id="type" class="form-select" required>
+                            <option value="pokemon">Pokémon</option>
+                            <option value="trainer">Entrenador</option>
+                            <option value="energy">Energía</option>
+                        </select>
+                    </div>
+
                     <!--Selector del color de fondo de la imagen-->
                     <div class="col-12">
                         <label for="bg_color" class="form-label text-white">Color de Fondo</label>
@@ -103,7 +113,7 @@
                     <!--Vida o HP-->
                     <div class="col-12">
                         <label for="hp" class="form-label text-white">HP</label>
-                        <input type="number" name="hp" id="hp" class="form-control" placeholder="Ej. 120" required>
+                        <input type="number" name="hp" id="hp" class="form-control" placeholder="Min.30 - Max.340" min= "30" max="340" required>
                     </div>
 
                     <!--Descripcion de la carta-->
