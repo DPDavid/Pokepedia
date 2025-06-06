@@ -12,6 +12,17 @@
 
 <body>
     <main class="container align-center p-5">
+        <!-- Mostrar errores de validacion -->
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <!--Post para enviar los datos-->
         <form method="POST" action="{{route('validar-registro')}}">
             @csrf
@@ -23,9 +34,15 @@
             </div>
             <!--Campo de la contraseña-->
             <div class="mb-3">
-                <label for="passwordInput" class="form-label">Password</label>
+                <label for="passwordInput" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="passwordInput"
                     name="password" required>
+            </div>
+            <!--Campo de la confirmacion de contraseña-->
+            <div class="mb-3">
+                <label for="passwordConfirmInput" class="form-label">Confirmar contraseña</label>
+                <input type="password" class="form-control" id="passwordConfirmInput"
+                    name="password_confirmation" required>
             </div>
             <!--Campo del nombre de usuario-->
             <div class="mb-3">

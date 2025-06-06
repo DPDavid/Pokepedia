@@ -117,6 +117,11 @@ class PokemonController extends Controller
             ]
         );
 
+        //Guarda la URL con filtros
+       session(['filtered_url' => request()->fullUrl()]);
+
+
+
         //Retornamos a la vista con los datos necesarios
         return view('pokemon.index', [
             'cards' => $paginatedCards,

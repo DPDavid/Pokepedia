@@ -70,6 +70,10 @@
             align-items: center;
         }
 
+        footer {
+            margin-top: auto;
+        }
+
         /*Contenedor de la vista con un filtro grisaceo*/
         .container {
             width: 90%;
@@ -189,7 +193,7 @@
         </label>
     </div>
 
-        @yield('content')
+    @yield('content')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -250,5 +254,22 @@
 
     @yield('scripts')
 </body>
+
+<footer class="bg-dark text-light py-4 mt-auto w-100">
+    <div class="container text-center">
+        <p class="mb-2">© {{ date('Y') }} PokePedia. Todos los derechos reservados.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="https://x.com/barriogitano420" target="_blank" class="text-light fs-4" aria-label="Twitter">
+                <i class="bi bi-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/sr.perez_10/" target="_blank" class="text-light fs-4" aria-label="Instagram">
+                <i class="bi bi-instagram"></i>
+            </a>
+            <a href="https://github.com/DPDavid" target="_blank" class="text-light fs-4" aria-label="GitHub">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
+    </div>
+</footer>
 
 </html>

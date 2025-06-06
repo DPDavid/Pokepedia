@@ -13,6 +13,13 @@ class LoginController extends Controller
     //---------Funcion para registrarse---------
     public function register(Request $request)
     {
+        //Validacion de las variables
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:4|confirmed',
+        ]);
+
         //Crea la instancia del modelo user
         $user = new User();
         //Asigna a user los valores del formulario

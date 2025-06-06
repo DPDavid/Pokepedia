@@ -12,6 +12,17 @@
 
 <body>
     <main class="container align-center p-5">
+        <!-- Mostrar errores de validacion -->
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <!--Post para enviar los datos-->
         <form method="POST" action="{{route('iniciar-sesion')}}">
             @csrf

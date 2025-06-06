@@ -34,7 +34,7 @@
                 @auth
                 <form action="{{ route('favorites.toggle', [$type, $card->{$type.'_id'}]) }}" method="POST" class="mb-3">
                     @csrf
-                    <input type="hidden" name="redirect_to" value="{{ request()->fullUrl() }}">
+                    <input type="hidden" name="redirect_to" value="{{ session('filtered_url', route('pokemon.index')) }}">
                     <button type="submit" class="btn btn-danger">
                         @php
                         // Verificación de si el usuario tiene esa carta en favoritos
@@ -190,9 +190,16 @@
         </div>
 
         <!--Boton para volver a la pagina anterior-->
-        <button onclick="history.back()" class="btn btn-primary mt-3">
+        @php
+        $previousUrl = url()->previous();
+        $currentUrl = request()->fullUrl();
+        $isSamePage = $previousUrl === $currentUrl;
+        $backUrl = session('filtered_url', route('pokemon.index'));
+        @endphp
+
+        <a href="{{ $isSamePage ? $backUrl : $previousUrl }}" class="btn btn-primary mt-3">
             <i class="bi bi-arrow-left-circle"></i> Volver atrás
-        </button>
+        </a>
     </div>
 </div>
 @endsection

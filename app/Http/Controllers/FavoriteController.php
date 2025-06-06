@@ -47,7 +47,9 @@ class FavoriteController extends Controller
             ->where("{$type}_id", $id)
             ->first();
 
-        $redirectTo = request()->input('redirect_to', route('pokemon.index'));
+        //Guardar la URL de refererncia con los filtros
+        $referer = request()->headers->get('referer');
+        $redirectUrl = $referer ?: route('pokemon.index');
 
         //Si ya esta en favorito es eliminada, sirve para alterna las cartas en favoritos
         if ($favorite) {
@@ -61,8 +63,7 @@ class FavoriteController extends Controller
             "{$type}_id" => $id
         ]);
 
-        return redirect(request('redirect_to', route('pokemon.index')))
-            ->with('success', 'Añadido a favoritos');
+        return redirect($redirectUrl)->with('success', 'Añadido a favoritos');
     }
 
     //------------Funcion para las cartas favoritas de cada usuario------------
